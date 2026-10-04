@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YDS Kelime Akademisi</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5B3FD9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="YDS Akademi">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F2FB; --surface:#FFFFFF; --ink:#1C1740; --muted:#625C80;
+  --line:#E0DCEF; --mark:#FFD23F; --accent:#5B3FD9; --accent2:#0E9F8E; --ok:#1F9D63; --okbg:#E3F6EC;
+  --bad:#D23F3F; --badbg:#FCE7E7; --btn:#1C1740; --btntext:#FFFFFF; --sel:#E9E4FF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#110E24; --surface:#1C1838; --ink:#EFEDFA; --muted:#A9A3C8;
+    --line:#2E2952; --mark:#E8B923; --accent:#9C86FF; --accent2:#38CDBA; --ok:#3CCB86; --okbg:#133528;
+    --bad:#F06B6B; --badbg:#3A1C22; --btn:#FFD23F; --btntext:#1C1740; --sel:#2E2760;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#110E24; --surface:#1C1838; --ink:#EFEDFA; --muted:#A9A3C8;
+  --line:#2E2952; --mark:#E8B923; --accent:#9C86FF; --accent2:#38CDBA; --ok:#3CCB86; --okbg:#133528;
+  --bad:#F06B6B; --badbg:#3A1C22; --btn:#FFD23F; --btntext:#1C1740; --sel:#2E2760;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:540px;margin:0 auto;padding:16px 16px 40px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.hidden{display:none!important}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{font-weight:800;font-size:1.02rem;background:none;border:0;padding:0;text-align:left}
+.stats{display:flex;gap:12px;font-size:.92rem;color:var(--muted)}
+.stats b{color:var(--ink);font-weight:800}
+h1{font-size:2rem;line-height:1.06;margin:4px 0 10px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:22px 0 10px}
+.hl{background:linear-gradient(transparent 58%,var(--mark) 58%)}
+.lead{color:var(--muted);font-size:1rem;line-height:1.5;margin:0 0 14px}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.kpi{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.kpi b{display:block;font-size:1.4rem;font-weight:800}
+.kpi span{font-size:.8rem;color:var(--muted)}
+.goal-top{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
+.track{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--mark);width:0;transition:width .4s}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.act{border:0;border-radius:16px;padding:14px;text-align:left;color:#fff;min-height:92px;display:flex;flex-direction:column;justify-content:space-between}
+.act strong{font-size:1.02rem}
+.act span{font-size:.82rem;opacity:.92}
+.act.a1{background:var(--accent)} .act.a2{background:var(--accent2)} .act.a3{background:#D9731F} .act.a4{background:#C23C6B}
+.act.wide{grid-column:1/-1;min-height:auto}
+.units{display:grid;gap:10px}
+.unit{display:flex;gap:12px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+.unit .em{font-size:1.7rem;width:2.2rem;text-align:center;flex:none}
+.unit .info{flex:1;min-width:0}
+.unit strong{display:block;font-size:1.02rem}
+.unit span{color:var(--muted);font-size:.86rem}
+.unit .mini{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}
+.unit .mini i{display:block;height:100%;background:var(--ok)}
+.pct{font-weight:800;font-size:.92rem;white-space:nowrap}
+.primary{width:100%;border:0;border-radius:14px;padding:15px;font-size:1.08rem;font-weight:800;background:var(--btn);color:var(--btntext)}
+.ghost{width:100%;border:2px solid var(--line);background:transparent;border-radius:14px;padding:12px;font-weight:600;margin-top:10px}
+.primary:disabled{opacity:.5}
+.tip{background:var(--sel);border-radius:12px;padding:12px 14px;line-height:1.5;font-size:.94rem;margin-bottom:14px}
+.steps{display:grid;gap:9px}
+.step{display:flex;gap:12px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+.step .n{width:2rem;height:2rem;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:800;flex:none;font-size:.95rem}
+.step.done .n{background:var(--ok);color:#fff}
+.step strong{display:block}
+.step span{color:var(--muted);font-size:.87rem}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:12px;min-height:250px}
+.card .tag{display:inline-block;font-size:.76rem;font-weight:800;color:var(--accent);background:var(--sel);padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.card .en{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;margin:0;word-break:break-word}
+.card .tr{font-size:1.2rem;margin:8px 0 0}
+.card .syn{color:var(--muted);margin-top:6px;font-size:.95rem}
+.card .ex{margin-top:14px;padding-top:12px;border-top:2px dashed var(--line);line-height:1.55;text-align:left}
+.card .ex b,.fb-sent b{background:linear-gradient(transparent 60%,var(--mark) 60%)}
+.reveal{margin-top:18px}
+.speak{border:2px solid var(--line);background:transparent;border-radius:99px;padding:7px 14px;font-weight:600;margin-top:12px}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rate button{border:0;border-radius:12px;padding:12px 6px;font-weight:800;color:#fff}
+.r0{background:var(--bad)} .r1{background:#D9731F} .r2{background:var(--ok)}
+.count{color:var(--muted);text-align:center;margin-bottom:10px}
+.row{display:flex;gap:10px}
+.row>*{flex:1;margin-top:0}
+.match-top{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.col{display:grid;gap:9px;align-content:start}
+.tile{min-height:58px;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px;font-size:.97rem;font-weight:600;transition:opacity .3s}
+.tile.sel{border-color:var(--accent);background:var(--sel)}
+.tile.ok{border-color:var(--ok);background:var(--okbg);opacity:.35;pointer-events:none}
+.tile.no{border-color:var(--bad);background:var(--badbg);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.qtimer.low{color:var(--bad);font-weight:800}
+.qtop{display:flex;justify-content:space-between;align-items:center;color:var(--muted);margin-bottom:10px;font-size:.9rem;gap:8px}
+.qlabel{font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.qtext{font-size:1.25rem;line-height:1.5;font-weight:600;margin:0 0 18px}
+.qtext.big{font-size:2rem;font-weight:800;text-align:center}
+.qtext .blank{display:inline-block;min-width:64px;border-bottom:3px solid var(--accent)}
+.passage{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px;line-height:1.7;font-size:1rem;margin-bottom:14px;max-height:42vh;overflow:auto}
+.passage .gap{display:inline-block;min-width:28px;padding:0 6px;border-radius:6px;background:var(--line);font-weight:800;font-size:.85rem}
+.passage .gap.cur{background:var(--mark);color:#1C1740}
+.passage .gap.filled{background:var(--okbg);color:var(--ok)}
+.passage .gap.missed{background:var(--badbg);color:var(--bad)}
+.options{display:grid;gap:8px}
+.opt{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:1.03rem;display:flex;gap:12px;align-items:center}
+.opt .k{font-weight:800;color:var(--muted);width:1.2em;flex:none}
+.opt.correct{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.bigspeak{display:block;margin:4px auto 22px;width:100px;height:100px;border-radius:50%;border:0;background:var(--mark);color:#1C1740;font-size:2.6rem}
+.write{display:flex;gap:8px}
+.write input{flex:1;min-width:0;border:2px solid var(--line);border-radius:12px;padding:13px;background:var(--surface);font-size:1.1rem}
+.write button{border:0;border-radius:12px;padding:0 18px;font-weight:800;background:var(--btn);color:var(--btntext)}
+.hint{color:var(--muted);margin:-8px 0 12px;font-size:.95rem;letter-spacing:.12em}
+.feedback{margin-top:12px;padding:13px 15px;border-radius:12px;background:var(--surface);border:2px solid var(--line);line-height:1.5}
+.feedback .t{font-weight:800;margin-bottom:2px}
+.feedback.good .t{color:var(--ok)} .feedback.bad .t{color:var(--bad)}
+.fb-sent{color:var(--muted);margin-top:6px}
+.big{font-size:3.8rem;font-weight:800;line-height:1;margin:10px 0 6px}
+.list{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+.list li{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 13px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.list .w{font-weight:800}
+.list .m{color:var(--muted);font-size:.88rem}
+.badge{font-size:.76rem;font-weight:800;padding:4px 9px;border-radius:99px;white-space:nowrap}
+.b-good{background:var(--okbg);color:var(--ok)} .b-bad{background:var(--badbg);color:var(--bad)} .b-mid{background:var(--line);color:var(--muted)}
+.guide p{line-height:1.6;margin:0 0 12px}
+.guide b{color:var(--accent)}
+
+.chart{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.chart h3{margin:0 0 4px;font-size:1rem}
+.chart .sub{color:var(--muted);font-size:.82rem;margin-bottom:8px}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th,.tbl td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl th{color:var(--muted);font-weight:600;font-size:.8rem}
+.tblwrap{overflow-x:auto}
+.bars .row2{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;margin:7px 0;font-size:.88rem}
+.bars .bg{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bars .bg i{display:block;height:100%;border-radius:99px}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.heat div{aspect-ratio:1;border-radius:4px;background:var(--line)}
+.kpis4{grid-template-columns:repeat(2,1fr)}
+.pop{animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <button class="brand" id="brandBtn">🎯 YDS Kelime Akademisi</button>
+    <div class="stats"><div title="Gün serisi">🔥 <b id="days">0</b></div><div title="Puan">⭐ <b id="xp">0</b></div></div>
+  </div>
+
+  <section id="home">
+    <h1>ÖSYM'nin <span class="hl">gerçekten sorduğu</span> kelimeler.</h1>
+    <p class="lead" id="homeLead"></p>
+    <div class="kpis">
+      <div class="kpi"><b id="kLearned">0</b><span>öğrenilen</span></div>
+      <div class="kpi"><b id="kSeen">0</b><span>çalışılan</span></div>
+      <div class="kpi"><b id="kDue">0</b><span>bugün tekrar</span></div>
+    </div>
+    <div class="panel">
+      <div class="goal-top"><span>Bugünkü hedef</span><span id="goalText"></span></div>
+      <div class="track"><i id="goalFill"></i></div>
+    </div>
+    <div class="actions">
+      <button class="act a1" id="btnReview"><strong>🔁 Günlük tekrar</strong><span id="reviewSub"></span></button>
+      <button class="act a2" id="btnNew"><strong>✨ 10 yeni kelime</strong><span>Kartlarla öğren, hemen test et</span></button>
+      <button class="act a3" id="btnExam"><strong>⏱ Deneme sınavları</strong><span>20, 40 veya 80 soru · süreli</span></button>
+      <button class="act a4" id="btnMistakes"><strong>🎯 Zayıf kelimelerim</strong><span id="mistakeSub"></span></button>
+      <button class="act a2 wide" id="btnStats" style="background:#1C1740;min-height:auto"><strong>📊 İstatistiklerim ve ilerleme tablom</strong><span id="statsSub">Günlük çalışma, doğruluk, öğrenilen kelime grafikleri</span></button>
+      <button class="act a1 wide" id="btnCloze" style="background:#2F6FDB"><strong>📄 Cloze testleri (paragrafta boşluk doldurma)</strong><span>Sınavdaki 17–26. sorular gibi, 8 özgün paragraf</span></button>
+    </div>
+    <div class="panel" style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-weight:600">⏱ Test süresi</span>
+      <select id="timeMode" style="font:inherit;border:2px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--surface);color:var(--ink)">
+        <option value="1">Normal (sınav temposu)</option>
+        <option value="1.5">Rahat (+%50 süre)</option>
+        <option value="0.75">Hızlı (-%25 süre)</option>
+        <option value="0">Süresiz</option>
+      </select>
+    </div>
+    <h2>Üniteler</h2>
+    <div class="units" id="unitList"></div>
+    <button class="ghost" id="btnGuide">📘 Bu uygulama nasıl öğretir? (çalışma rehberi)</button>
+    <button class="ghost" id="btnBackup">💾 İlerlemeyi yedekle / geri yükle</button>
+    <button class="ghost" id="btnReset" style="font-size:.9rem">İlerlemeyi sıfırla</button>
+  </section>
+
+  <section id="unitView" class="hidden">
+    <h1 id="uvTitle"></h1>
+    <p class="lead" id="uvLead"></p>
+    <div class="tip" id="uvTip"></div>
+    <div class="units" id="partList"></div>
+    <button class="ghost" id="uvBack">Ana ekran</button>
+  </section>
+
+  <section id="partView" class="hidden">
+    <h1 id="pvTitle" style="font-size:1.6rem"></h1>
+    <p class="lead" id="pvLead"></p>
+    <div class="steps" id="stepList"></div>
+    <button class="ghost" id="pvList">Kelime listesi ve durumum</button>
+    <button class="ghost" id="pvBack">Üniteye dön</button>
+  </section>
+
+  <section id="cards" class="hidden">
+    <div class="count" id="cCount"></div>
+    <div class="card">
+      <div class="tag" id="cTag"></div>
+      <p class="en" id="cEn"></p>
+      <button class="speak" id="cSpeak">🔊 Dinle</button>
+      <div id="cBack" class="hidden">
+        <p class="tr" id="cTr"></p>
+        <div class="syn" id="cSyn"></div>
+        <div class="ex" id="cEx"></div>
+      </div>
+      <div id="cFrontHint" class="reveal" style="color:var(--muted)">Önce anlamını kendin hatırlamaya çalış, sonra kartı çevir.</div>
+    </div>
+    <button class="primary" id="cFlip">Kartı çevir</button>
+    <div class="rate hidden" id="cRate">
+      <button class="r0" data-r="0">Bilmiyordum</button>
+      <button class="r1" data-r="1">Zorlandım</button>
+      <button class="r2" data-r="2">Biliyordum</button>
+    </div>
+    <button class="ghost" id="cQuit">Bitir</button>
+  </section>
+
+  <section id="match" class="hidden">
+    <div class="match-top"><span id="mRound"></span><span id="mTime">⏱ 0 sn</span></div>
+    <p class="lead" style="margin-bottom:12px">Soldan bir kelime, sağdan anlamını seç.</p>
+    <div class="grid"><div class="col" id="mLeft"></div><div class="col" id="mRight"></div></div>
+    <button class="ghost" id="mQuit">Bitir</button>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="qtop"><span id="qCount"></span><span id="qTimer" class="qtimer"></span></div>
+    <div class="track" style="margin-bottom:16px"><i id="qFill"></i></div>
+    <div id="qPassage"></div>
+    <div class="qlabel" id="qLabel"></div>
+    <div id="qPrompt"></div>
+    <div class="options" id="qOpts"></div>
+    <div class="feedback hidden" id="qFb" aria-live="polite"></div>
+    <button class="primary hidden" id="qNext" style="margin-top:12px">Sonraki</button>
+    <button class="ghost" id="qQuit">Bitir</button>
+  </section>
+
+  <section id="done" class="hidden">
+    <p class="lead" style="margin:0" id="dLabel"></p>
+    <div class="big" id="dBig"></div>
+    <p class="lead" id="dText"></p>
+    <button class="primary" id="dNext"></button>
+    <button class="ghost" id="dAgain">Tekrar</button>
+    <ul class="list" id="dList"></ul>
+  </section>
+
+  <section id="listView" class="hidden">
+    <h1 style="font-size:1.7rem" id="lvTitle"></h1>
+    <p class="lead" id="lvLead"></p>
+    <button class="primary hidden" id="lvStudy">Bunları çalış</button>
+    <ul class="list" id="lvList"></ul>
+    <button class="ghost" id="lvBack">Geri dön</button>
+  </section>
+
+  <section id="clozeList" class="hidden">
+    <h1 style="font-size:1.7rem">📄 Cloze testleri</h1>
+    <p class="lead">Her paragrafta 4–5 boşluk var. Tıpkı sınavdaki gibi hem kelime, hem bağlaç, hem phrasal verb bilgisi gerekir. Paragrafın tamamını okuyup bağlamı kullan.</p>
+    <div class="units" id="clozeUnits"></div>
+    <button class="ghost" id="clBack">Ana ekran</button>
+  </section>
+
+  <section id="weak" class="hidden">
+    <h1 style="font-size:1.8rem">🎯 Zayıf kelimelerim</h1>
+    <p class="lead" id="wkLead"></p>
+    <div class="kpis">
+      <div class="kpi"><b id="wkCount">0</b><span>zayıf kelime</span></div>
+      <div class="kpi"><b id="wkHard">0</b><span>3+ kez yanlış</span></div>
+      <div class="kpi"><b id="wkFixed">0</b><span>düzeltilen</span></div>
+    </div>
+    <div class="tip">💡 Bir kelime yanlış yapıldığında buraya düşer. <b>2 kez doğru</b> bildiğinde listeden çıkar. "Bitene kadar tekrar" modunda yanlış yaptığın kelime turun sonunda tekrar karşına gelir.</div>
+    <div class="steps" id="wkActs"></div>
+    <h2>Liste (en çok yanlış yapılan üstte)</h2>
+    <ul class="list" id="wkList"></ul>
+    <button class="ghost" id="wkBack">Ana ekran</button>
+  </section>
+
+  <section id="examMenu" class="hidden">
+    <h1 style="font-size:1.8rem">⏱ Deneme sınavları</h1>
+    <p class="lead">Sorular gerçek sınav sırasıyla gelir: kelime ve phrasal verb soruları, bağlaçlar, cloze paragrafları. Süre bitince cevaplanmayan sorular yanlış sayılır.</p>
+    <div class="units" id="exOpts"></div>
+    <h2>Geçmiş denemelerim</h2>
+    <ul class="list" id="exHist"></ul>
+    <button class="ghost" id="exBack">Ana ekran</button>
+  </section>
+
+  <section id="stats" class="hidden">
+    <h1 style="font-size:1.8rem">📊 İstatistiklerim</h1>
+    <p class="lead">Bu cihazdaki tüm çalışmalar gün gün kaydedilir.</p>
+    <div class="kpis" id="stKpis"></div>
+    <div id="stCharts"></div>
+    <button class="ghost" id="stBack">Ana ekran</button>
+  </section>
+
+  <section id="backup" class="hidden">
+    <h1 style="font-size:1.8rem">💾 Yedekleme</h1>
+    <p class="lead">İlerlemen sadece bu cihazda ve bu tarayıcıda saklanır. Telefon değiştirirken ya da uygulamanın yeni bir sürümüne geçerken aşağıdaki yedek kodunu kopyalayıp yeni yerde "Geri yükle"ye yapıştır.</p>
+    <h2>1. Yedek kodu al</h2>
+    <textarea id="bkOut" readonly style="width:100%;min-height:110px;border:2px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);color:var(--ink);font-size:.8rem"></textarea>
+    <button class="primary" id="bkCopy" style="margin-top:8px">Yedek kodunu kopyala</button>
+    <h2>2. Geri yükle</h2>
+    <textarea id="bkIn" placeholder="Yedek kodunu buraya yapıştır" style="width:100%;min-height:110px;border:2px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);color:var(--ink);font-size:.8rem"></textarea>
+    <button class="primary" id="bkLoad" style="margin-top:8px">Geri yükle</button>
+    <p class="lead" id="bkMsg" style="margin-top:10px;font-weight:600"></p>
+    <button class="ghost" id="bkBack">Ana ekran</button>
+  </section>
+
+  <section id="guide" class="hidden guide">
+    <h1 style="font-size:1.7rem">📘 Nasıl öğretiyor?</h1>
+    <p><b>1. Aralıklı tekrar (spaced repetition):</b> Her kelime 6 kutulu bir sistemde. Doğru bildikçe bir üst kutuya çıkar ve daha seyrek sorulur (1, 3, 7, 14, 30 gün sonra). Yanlış yaparsan başa döner. Unutmak üzere olduğun anda tekrar etmek, kelimeyi uzun süreli hafızaya taşır. Bu yüzden her gün "Günlük tekrar"ı bitir.</p>
+    <p><b>2. Aktif hatırlama:</b> Kartlarda anlam hemen gösterilmez; önce kendin hatırlamaya çalışırsın. Beynin cevabı üretmeye zorlanması, sadece okumaktan çok daha etkilidir. "Yazarak hatırla" alıştırması bunun en güçlü hâlidir.</p>
+    <p><b>3. Bağlam içinde öğrenme:</b> Her kelime sınav tarzı bir cümlede verilir. ÖSYM kelimeyi tek başına değil, cümle içinde sorar.</p>
+    <p><b>4. Çoklu kanal:</b> Kelimeyi görür, duyar, yazar, eşleştirir ve eş anlamlısıyla bağlarsın. Her kanal hafızada ayrı bir iz bırakır.</p>
+    <p><b>5. Karışık çalışma:</b> Deneme ve günlük tekrarda farklı türler karışık gelir; bu, sınavdaki gibi hızlı ayırt etmeyi öğretir.</p>
+    <p><b>6. Hatalardan öğrenme:</b> Yanlış yaptığın her kelime Hata Defteri'ne düşer. Yanlış şıkkın anlamı da gösterilir; çünkü ÖSYM'nin çeldiricileri başka sınavlarda doğru cevap olabiliyor.</p>
+    <p><b>Önerilen günlük plan (20–30 dk):</b> Önce günlük tekrarı bitir, sonra 10 yeni kelime öğren, haftada 2 kez bir cloze testi ve bir mini deneme çöz.</p>
+    <button class="primary" id="gBack">Anladım</button>
+  </section>
+</main>
+<script>
+/* Biçim: *işaret = ÖSYM'de tekrar çıkan | kelime | Türkçe | eş anlam | cümle (---- boşluk) | grup (çeldirici çakışmasın) */
+const D_N = `
+access|erişim|entry|Millions of people in rural areas still lack ---- to clean drinking water.
+*deterioration|bozulma, kötüleşme|decline|Without regular repairs, the old bridge showed clear signs of ----.
+*exploitation|sömürü, aşırı kullanım|misuse|The ---- of natural resources has seriously damaged many fragile ecosystems.
+*challenge|zorluk, meydan okuma|difficulty|Feeding a growing population is the greatest ---- facing modern agriculture.
+expenditure|harcama|spending|Government ---- on health care has risen sharply over the last decade.
+prospects|beklentiler, gelecek olasılıkları|chances|Learning a second language can greatly improve your job ----.
+evidence|kanıt|proof|There is little scientific ---- that the supplement actually improves memory.
+shift|değişim, kayma|change|Economists have observed a major ---- in consumer behaviour since online shopping became common.
+utilisation|kullanım, yararlanma|use|Efficient ---- of water is vital in regions that regularly suffer from drought.
+exception|istisna||Most birds are able to fly, but penguins are a well-known ----.
+distribution|dağıtım, dağılım|allocation|The unequal ---- of wealth remains a serious problem in many countries.
+*implications|sonuçlar, etkiler|effects|Researchers are still debating the long-term ---- of artificial intelligence for employment.|res
+detection|tespit|discovery|Early ---- of cancer greatly increases a patient's chances of survival.
+excuse|bahane|pretext|He always had a new ---- for arriving late to work.
+objective|hedef|goal|The main ---- of the project is to reduce energy consumption by half.
+*diversity|çeşitlilik|variety|The rainforest is famous for its remarkable ---- of plant and animal species.
+*estimate|tahmin|approximation|According to a recent ----, the city's population will double by 2050.
+maintenance|bakım, sürdürme|upkeep|The body needs protein for the growth and ---- of healthy muscles.
+threat|tehdit|danger|Climate change is the biggest ---- to wildlife in the Arctic.|dng
+remnants|kalıntılar|remains|Archaeologists discovered the ---- of an ancient wall beneath the city centre.
+jeopardy|tehlike|risk|The survival of many small family farms is now in ---- because of rising costs.|dng
+recognition|tanınma, takdir|acknowledgement|The scientist finally received international ---- for her work decades after her death.
+*consequence|sonuç|outcome|Losing his job was a direct ---- of his careless behaviour.|res
+*requirement|gereklilik, şart|condition|A good level of English is a basic ---- for this position.
+supply|tedarik, arz|provision|A reliable ---- of electricity is essential for every modern hospital.
+efficacy|etkinlik (tedavide)|effectiveness|Clinical trials are designed to test the safety and ---- of new drugs.
+recovery|iyileşme|healing|Regular physical therapy helped speed up her ---- after the operation.
+tendency|eğilim|inclination|Teenagers have a ---- to stay up late and sleep in the morning.
+*incentives|teşvikler|motivations|The government offers tax ---- to companies that employ young people.
+insight|içgörü, kavrayış|understanding|The study provides valuable ---- into how children learn languages.
+assumption|varsayım|presumption|The theory is based on the ---- that people always act rationally.
+drawback|dezavantaj|disadvantage|The main ---- of electric cars is their relatively short driving range.
+obstacle|engel|barrier|Lack of funding remains the biggest ---- to scientific progress in poor countries.
+shortage|kıtlık, eksiklik|scarcity|The hospital is facing a serious ---- of nurses and doctors.|lack
+phenomenon|olgu, olay|occurrence|The northern lights are a natural ---- caused by particles from the sun.
+consensus|uzlaşı, fikir birliği|agreement|There is now a broad scientific ---- that the climate is warming.
+deficiency|eksiklik (vitamin vb.)|lack|A ---- of vitamin D can lead to weak bones.|lack
+precaution|önlem|safeguard|Wearing a helmet is a simple ---- that can save your life.
+exposure|maruz kalma|contact|Long-term ---- to loud noise can damage your hearing.
+intervention|müdahale|involvement|Early medical ---- can prevent the disease from getting worse.
+awareness|farkındalık|consciousness|The campaign aims to raise public ---- of the dangers of smoking.
+trait|(kişilik) özellik|characteristic|Curiosity is a common ---- among successful scientists.
+significance|önem|importance|Historians are still discussing the ---- of the ancient city.
+outcome|sonuç|result|Nobody could predict the ---- of the election.|res
+decline|düşüş, azalma|decrease|There has been a steady ---- in the number of bees in Europe.
+perception|algı|view|Advertising can change our ---- of what is beautiful.
+contribution|katkı|input|Marie Curie made an enormous ---- to modern physics.
+survival|hayatta kalma|endurance|Clean water is essential for the ---- of every living thing.
+capacity|kapasite|volume|The new stadium has a ---- of 50,000 people.
+attempt|girişim, deneme|effort|Her first ---- to climb the mountain ended in failure.
+decade|on yıl|ten years|The city has changed dramatically over the past ----.
+mechanism|mekanizma, işleyiş|process|Scientists do not fully understand the ---- that controls sleep.
+concern|endişe|worry|There is growing ---- about the safety of genetically modified food.
+dimension|boyut|aspect|The problem has an important social ---- as well as an economic one.|asp
+aspect|yön, açı|feature|Diet is only one ---- of a healthy lifestyle.|asp
+variation|farklılık|difference|There is considerable ---- in rainfall from one year to the next.
+emergence|ortaya çıkış|appearance|The ---- of the internet completely changed the music industry.
+abundance|bolluk|plenty|The region is known for its ---- of fresh fruit and vegetables.
+scarcity|kıtlık|shortage|The ---- of water in the desert makes farming almost impossible.|lack
+hazard|tehlike|danger|Smoking in bed is a serious fire ----.|dng
+accumulation|birikim|build-up|The gradual ---- of plastic in the oceans threatens marine life.
+controversy|tartışma|dispute|The decision to build a new airport caused great ----.
+compensation|tazminat|payment|The workers received ---- for the injuries they suffered at the factory.
+initiative|girişim, inisiyatif|scheme|The city has launched a new ---- to encourage people to cycle to work.
+constraints|kısıtlamalar|limitations|Budget ---- forced the museum to close two of its galleries.
+disruption|aksama, bozulma|disturbance|The strike caused serious ---- to train services across the country.
+aspirations|özlemler, hedefler|ambitions|Many young people have ---- to work abroad after graduating.
+*elimination|ortadan kaldırma|removal|The ---- of child poverty should be a top priority for every government.
+manipulation|manipülasyon|control|Advertisers are often accused of the ---- of public opinion.
+inheritance|kalıtım; miras|legacy|Eye colour is determined by genetic ----.
+allocation|tahsis|distribution|The ---- of funds to schools depends on the number of students.
+fluctuations|dalgalanmalar|variations|Sudden ---- in temperature can harm young plants.
+reluctance|isteksizlik|unwillingness|Her ---- to speak in public made the job interview difficult.
+dedication|adanmışlık|commitment|The nurses were praised for their ---- during the pandemic.
+necessity|gereklilik, ihtiyaç|need|A car is a ---- rather than a luxury for people living in the countryside.
+substitute|ikame, yerine geçen şey|replacement|Honey is often used as a healthy ---- for sugar.
+threshold|eşik|limit|Some people have a low pain ---- and feel discomfort easily.
+`;
+const D_A = `
+*sustainable|sürdürülebilir|lasting|Farmers are being encouraged to adopt more ---- methods that protect the soil.
+eager|istekli, hevesli|keen|Many young graduates are ---- to gain work experience abroad.
+massive|devasa|huge|The earthquake caused ---- damage to buildings across the region.|big
+inseparable|ayrılmaz|linked|For many people, food and culture are ---- parts of their identity.
+worthwhile|zahmete değer|valuable|Volunteering is a ---- experience that benefits both you and your community.
+observable|gözlemlenebilir|visible|The effects of the new medicine became ---- only after several weeks.
+immense|muazzam|huge|The influence of the internet on the way we communicate has been ----.|big
+dramatic|çarpıcı, büyük|sharp|There has been a ---- increase in the number of people working from home.|big
+*vulnerable|savunmasız, hassas|susceptible|Elderly people are especially ---- to infections during the winter months.|sus
+tremendous|muazzam|huge|Winning the championship required a ---- amount of effort.|big
+*excessive|aşırı|extreme|The ---- use of antibiotics has led to the rise of resistant bacteria.
+compelling|ikna edici|convincing|The lawyer presented ---- evidence that the man was innocent.
+viable|uygulanabilir|feasible|Solar power has become a commercially ---- alternative to fossil fuels.|feas
+inconclusive|kesin sonuç vermeyen|uncertain|The results of the study were ----, so further research is needed.|unc
+pervasive|her yere yayılmış|widespread|Social media has become a ---- part of teenagers' daily lives.|wide
+essential|temel, gerekli|vital|Sleep is ---- for both physical and mental health.|vit
+considerable|hatırı sayılır|substantial|The new bridge will save commuters a ---- amount of time.|big
+severe|ciddi, şiddetli|serious|The region is suffering from a ---- shortage of clean water.
+significant|önemli, kayda değer|important|Regular exercise can make a ---- difference to your mood.|big
+dissatisfied|memnuniyetsiz|unhappy|Many customers were ---- with the company's slow service.
+widespread|yaygın|common|There is ---- concern about rising food prices.|wide
+crucial|çok önemli|vital|Good communication is ---- in any successful relationship.|vit
+adequate|yeterli|sufficient|Many schools lack ---- funding for new equipment.|suf
+sufficient|yeterli|enough|There is not ---- evidence to prove that the man is guilty.|suf
+harmful|zararlı|damaging|Too much sugar is ---- to your teeth.|harm
+detrimental|zararlı|harmful|Stress can have a ---- effect on your immune system.|harm
+beneficial|faydalı|helpful|Moderate exercise is ---- for people of all ages.
+adverse|olumsuz, ters|negative|The drug can have ---- side effects in some patients.|harm
+reluctant|isteksiz|unwilling|Many people are ---- to change their eating habits.
+prone|eğilimli, yatkın|susceptible|People who sleep badly are more ---- to accidents at work.|sus
+inevitable|kaçınılmaz|unavoidable|Some mistakes are ---- when you are learning a new skill.
+feasible|yapılabilir|practical|Building a bridge across the strait is technically ----.|feas
+ambiguous|belirsiz, muğlak|unclear|The instructions were so ---- that nobody knew what to do.|unc
+vague|belirsiz, bulanık|unclear|He gave only a ---- description of the man he had seen.|unc
+obsolete|modası geçmiş|outdated|Many jobs will become ---- as a result of automation.
+fragile|kırılgan|delicate|The ecosystem of the coral reef is extremely ----.
+scarce|kıt|rare|Fresh water is becoming increasingly ---- in many parts of Africa.
+abundant|bol|plentiful|Fish were once ---- in these waters, but overfishing has reduced their numbers.
+prominent|önde gelen|leading|She is one of the most ---- scientists in her field.
+remarkable|dikkat çekici|extraordinary|The athlete made a ---- recovery after the accident.
+controversial|tartışmalı|debatable|The new law has proved highly ---- among teachers.
+contemporary|çağdaş|modern|The museum focuses on ---- art from Asia.
+distinct|ayrı, belirgin|separate|The two languages have completely ---- grammatical systems.
+comprehensive|kapsamlı|thorough|The report provides a ---- analysis of the education system.
+extensive|geniş, kapsamlı|huge|The library has an ---- collection of rare books.|big
+chronic|kronik, süreğen|persistent|Millions of people suffer from ---- back pain.
+hostile|düşmanca|unfriendly|The local people were ---- to plans for a new factory.
+irrelevant|ilgisiz|unrelated|His comments were completely ---- to the discussion.
+legitimate|meşru, yasal|valid|Workers have a ---- right to ask for better conditions.
+peculiar|tuhaf|strange|There was a ---- smell coming from the kitchen.
+redundant|gereksiz; işten çıkarılmış|unnecessary|Many workers were made ---- when the factory closed.
+empirical|deneysel, gözleme dayalı|experimental|Scientists collect ---- data through observation and experiments.
+subtle|ince, belli belirsiz|slight|There are ---- differences between the two dialects.
+vigorous|güçlü, yoğun|energetic|Doctors recommend at least thirty minutes of ---- exercise a day.
+elaborate|ayrıntılı, özenli|detailed|The wedding was an ---- ceremony that lasted three days.
+swift|hızlı|quick|The government promised a ---- response to the crisis.
+intact|bozulmamış, sağlam|undamaged|Surprisingly, the ancient vase was found completely ----.
+hazardous|tehlikeli|harmful|Workers must wear protective clothing when handling ---- chemicals.|harm
+urgent|acil|pressing|There is an ---- need for more doctors in rural areas.
+accessible|erişilebilir|available|The museum is ---- to visitors in wheelchairs.
+*entitled|hak sahibi|eligible|All employees are ---- to four weeks of paid holiday.
+indifferent|kayıtsız|uninterested|Many young people seem ---- to politics.
+sceptical|şüpheci|doubtful|Many experts remain ---- about the benefits of the new diet.
+optimistic|iyimser|hopeful|The doctors are ---- that she will make a full recovery.
+tolerable|katlanılabilir|bearable|The pain was ---- at first, but it soon became worse.
+`;
+const D_R = `
+thoroughly|iyice, baştan sona|completely|Wash the vegetables ---- before you cook them.|full
+completely|tamamen|entirely|The village was ---- destroyed by the flood.|full
+*precisely|tam olarak|exactly|Scientists still do not know ---- how the brain stores memories.|exact
+*accurately|doğru biçimde|precisely|Modern satellites can ---- predict the path of a hurricane.|exact
+relatively|nispeten, görece|comparatively|The disease is ---- rare, affecting only one in ten thousand people.|rel
+significantly|önemli ölçüde|greatly|Air pollution in the city has fallen ---- since the new law was introduced.|deg
+*considerably|kayda değer ölçüde|greatly|House prices vary ---- from one neighbourhood to another.|deg
+dramatically|çarpıcı biçimde|greatly|The number of tourists has increased ---- in recent years.|deg
+substantially|büyük ölçüde|greatly|The new engine reduces fuel consumption ----.|deg
+impressively|etkileyici biçimde|remarkably|The small company has grown ---- over the past five years.|deg
+*severely|ciddi biçimde|seriously|The region was ---- affected by the drought.|deg
+profoundly|derinden|deeply|The death of his father ---- affected his later work.|deg
+steadily|istikrarlı biçimde|consistently|Unemployment has risen ---- for three years.|deg
+notably|özellikle, bilhassa|particularly|Several European countries, most ---- Germany, have invested in wind energy.|part
+particularly|özellikle|especially|Children are ---- sensitive to air pollution.|part
+purely|sadece, tamamen|only|The decision was based ---- on economic factors.|only
+merely|sadece|only|The report is ---- a first step towards solving the problem.|only
+exclusively|yalnızca|only|The beach is reserved ---- for hotel guests.|only
+extensively|kapsamlı biçimde|widely|This topic has been studied ---- by psychologists for decades.|wide
+widely|yaygın olarak|commonly|English is ---- used in international business.|wide
+commonly|yaygın olarak|widely|Aspirin is ---- used to reduce fever and pain.|wide
+readily|kolayca, hemen|easily|Fresh fruit is ---- available in local markets.|wide
+firmly|sıkıca, sağlam biçimde|strongly|The festival is ---- rooted in the country's history.
+intricately|incelikle, karmaşık biçimde|elaborately|The ancient carpets were ---- decorated with tiny flowers.
+eventually|sonunda|finally|After months of searching, he ---- found a job.|fin
+ultimately|nihayetinde|finally|The final decision ---- rests with the government.|fin
+gradually|yavaş yavaş|slowly|The ice is ---- melting as temperatures rise, a little more each year.
+initially|başlangıçta|at first|----, the project was planned to last two years, but it took five.|first
+previously|önceden|formerly|The disease had never been seen in Europe ----.|first
+rapidly|hızla|quickly|The virus spread ---- through the crowded city.
+constantly|sürekli|continually|The software is ---- updated to fix new problems.
+approximately|yaklaşık|roughly|The journey takes ---- three hours.
+virtually|neredeyse|almost|The tiny village is ---- unknown to tourists.|rel
+barely|zar zor, ancak|hardly|He was so tired that he could ---- keep his eyes open.
+simultaneously|aynı anda|at the same time|It is difficult to listen and take notes ----.
+deliberately|kasıtlı olarak|intentionally|The fire was ---- started by someone who wanted the insurance money.|int
+inadvertently|istemeden|accidentally|She ---- deleted the important file while cleaning her computer.|int
+presumably|muhtemelen|probably|The fossil is ---- more than ten million years old.
+arguably|pek çok kişiye göre|possibly|Shakespeare is ---- the greatest writer in the English language.
+predominantly|ağırlıklı olarak|mainly|The population of the region is ---- young.|main
+primarily|esas olarak|mainly|The course is designed ---- for beginners.|main
+respectively|sırasıyla|in that order|Tom and Anna are 12 and 15 years old, ----.
+conversely|tersine|on the other hand|Some drugs relax the muscles; ----, others make them tense.
+`;
+const D_V = `
+foster|teşvik etmek, geliştirmek|encourage|Group projects can ---- cooperation among students.|boost
+*stimulate|harekete geçirmek, canlandırmak|encourage|Lower interest rates are expected to ---- economic growth.|boost
+promote|desteklemek, teşvik etmek|encourage|The campaign aims to ---- healthy eating habits in schools.|boost
+enhance|artırmak, geliştirmek|improve|Adding music to a lesson can ---- students' motivation.|boost
+boost|artırmak, desteklemek|increase|A short walk after lunch can ---- your energy levels.|boost
+convey|iletmek, aktarmak|communicate|Artists often use colour to ---- strong emotions.
+fluctuate|dalgalanmak|vary|Oil prices tend to ---- depending on political events.
+confront|yüzleşmek, karşı karşıya kalmak|face|Every generation must ---- new social and economic problems.|face
+tackle|ele almak, mücadele etmek|address|The government must ---- the problem of youth unemployment.|face
+overcome|üstesinden gelmek|conquer|With the help of her family, she managed to ---- her fear of flying.|face
+*ensure|sağlamak, garanti etmek|guarantee|Regular inspections ---- that the equipment is safe to use.
+discriminate|ayırt etmek; ayrımcılık yapmak|distinguish|Newborn babies can ---- between their mother's voice and the voices of strangers.|dist
+distinguish|ayırt etmek|differentiate|It can be difficult to ---- between real news and fake news online.|dist
+display|sergilemek, göstermek|show|Children with the disorder often ---- signs of anxiety.|show
+exhibit|sergilemek, göstermek|show|Patients with the virus often ---- symptoms such as fever and cough.|show
+encompass|kapsamak|include|The new national park will ---- forests, lakes and several villages.|incl
+comprise|-den oluşmak, kapsamak|consist of|The committee will ---- five experts from different fields.|incl
+constitute|oluşturmak|make up|Women ---- nearly half of the country's workforce.|incl
+herald|müjdelemek, habercisi olmak|signal|Many believed the printing press would ---- a new age of learning.
+arise|ortaya çıkmak|emerge|Problems often ---- when team members fail to communicate.|emrg
+emerge|ortaya çıkmak|appear|New evidence has begun to ---- about the causes of the disease.|emrg
+transmit|aktarmak, bulaştırmak|pass on|Mosquitoes can ---- serious diseases such as malaria.
+inhabit|yaşamak, yerleşmek|live in|Thousands of rare species ---- the small islands off the coast.
+*eliminate|ortadan kaldırmak|remove|The new software aims to ---- human error in the process.|rem
+eradicate|kökünü kazımak|wipe out|Scientists hope to ---- malaria within the next twenty years.|rem
+undermine|zayıflatmak, baltalamak|weaken|Constant criticism can ---- a child's self-confidence.|weak
+diminish|azalmak, azaltmak|decrease|The pain will slowly ---- after a few days.|weak
+hinder|engellemek|obstruct|Poor roads ---- economic development in the region.|block
+inhibit|engellemek, baskılamak|restrain|Certain drugs can ---- the growth of cancer cells.|block
+acquire|edinmek|gain|Young children ---- language skills remarkably quickly.|gain
+obtain|elde etmek|get|Visitors must ---- a permit before entering the national park.|gain
+attain|ulaşmak, elde etmek|achieve|Few athletes ever ---- the level of an Olympic champion.|gain
+achieve|başarmak|accomplish|With hard work, you can ---- your goals.|gain
+assess|değerlendirmek|evaluate|Teachers use regular tests to ---- students' progress.|eval
+evaluate|değerlendirmek|assess|Researchers will ---- the effects of the new policy next year.|eval
+*estimate|tahmin etmek|calculate|Experts ---- that the repairs will cost millions of dollars.|pred
+predict|tahmin etmek, öngörmek|forecast|It is almost impossible to ---- exactly when an earthquake will occur.|pred
+anticipate|beklemek, öngörmek|expect|Organisers ---- that more than a million people will attend the festival.|pred
+determine|belirlemek|decide|Genes partly ---- how tall a person will be.
+identify|tanımlamak, teşhis etmek|recognise|Police are trying to ---- the man in the photograph.
+reveal|ortaya çıkarmak|disclose|Recent studies ---- that most adults sleep less than seven hours a night.|show2
+indicate|göstermek, işaret etmek|suggest|A high temperature may ---- an infection.|show2
+demonstrate|kanıtlamak, göstermek|prove|The experiment was designed to ---- that the theory was correct.|show2
+imply|ima etmek|suggest|His silence seemed to ---- that he agreed.|show2
+alter|değiştirmek|change|Even small amounts of alcohol can ---- the way the brain works.|chg
+modify|değiştirmek|adjust|Scientists ---- the seeds to make them resistant to insects.|chg
+adapt|uyum sağlamak|adjust|Animals must ---- to changes in their environment or die out.
+restrict|kısıtlamak|limit|The new law will ---- the sale of alcohol near schools.|lim
+regulate|düzenlemek|control|The government plans to ---- the use of drones in cities.|lim
+impose|dayatmak, uygulamak|enforce|Many countries ---- heavy taxes on tobacco products.
+comply|uymak (with)|obey|All factories must ---- with the new safety rules.
+allocate|tahsis etmek|assign|The school decided to ---- more money to science education.
+deplete|tüketmek|exhaust|Intensive farming can quickly ---- the nutrients in the soil.
+sustain|sürdürmek|maintain|It is difficult to ---- such rapid economic growth for long.|keep
+maintain|sürdürmek, korumak|keep|It is important to ---- a healthy weight as you get older.|keep
+retain|elde tutmak, korumak|keep|Clay soils ---- water much longer than sandy soils.|keep
+derive|türemek, elde etmek (from)|originate|Many English words ---- from Latin.
+contribute|katkıda bulunmak|add|Many different factors ---- to heart disease.
+emphasise|vurgulamak|stress|Doctors ---- the importance of regular exercise.|str
+highlight|öne çıkarmak|stress|The report aims to ---- the problems facing rural schools.|str
+neglect|ihmal etmek|ignore|Busy parents sometimes ---- their own health.|ign
+overlook|gözden kaçırmak|miss|It is easy to ---- small mistakes when you are tired.|ign
+ignore|görmezden gelmek|disregard|Drivers who ---- speed limits put everyone at risk.|ign
+perceive|algılamak|see|Many people ---- spiders as dangerous, although most are harmless.
+assume|varsaymak|suppose|Many people ---- that expensive products are always better.
+acknowledge|kabul etmek|admit|The company finally had to ---- that the product was unsafe.
+advocate|savunmak, desteklemek|support|Many doctors ---- a diet rich in vegetables.
+refute|çürütmek|disprove|New evidence seems to ---- the old theory.
+justify|haklı çıkarmak|defend|Nothing can ---- violence against innocent people.
+accelerate|hızlandırmak|speed up|Rising temperatures ---- the melting of the polar ice.
+facilitate|kolaylaştırmak|ease|Good lighting can ---- reading in the classroom.
+hesitate|tereddüt etmek|pause|Do not ---- to call me if you need any help.
+thrive|gelişmek, serpilmek|flourish|These plants ---- in warm, humid conditions.
+deteriorate|kötüleşmek|worsen|His health began to ---- after he retired.
+`;
+const D_P = `
+*hand down|kuşaktan kuşağa aktarmak|pass on|Grandparents often ---- traditional recipes to their grandchildren.|pass
+pass on|aktarmak, geçirmek|transmit|Parents can ---- certain diseases to their children through their genes.|pass
+figure out|anlamak, çözmek|work out|It took the engineers weeks to ---- what had caused the failure.|solve
+work out|çözmek, hesaplamak|figure out|Can you ---- how much the trip will cost?|solve
+put up with|katlanmak|tolerate|I can't ---- this terrible noise any longer.|bear
+account for|açıklamak; oluşturmak|explain|Several factors may ---- the sudden drop in sales.
+*depend on|bağlı olmak|rely on|Whether we go camping this weekend will ---- the weather.|rely
+rely on|güvenmek, dayanmak|depend on|Many small towns ---- tourism as their main source of income.|rely
+draw on|yararlanmak|use|Good writers often ---- their own childhood experiences.|rely
+*take up|(hobiye) başlamak; yer kaplamak|begin|After retiring, she decided to ---- painting.|learn
+*cope with|başa çıkmak|deal with|Many students find it hard to ---- exam stress.|bear
+deal with|ilgilenmek, ele almak|handle|The new manager will ---- complaints from customers.|bear
+cut off|kesmek, bağlantısını kesmek|disconnect|The storm could ---- electricity to thousands of homes.
+*call for|gerektirmek, talep etmek|require|The current crisis will ---- urgent action by the government.
+*carry out|yürütmek, gerçekleştirmek|conduct|Researchers plan to ---- a series of experiments next year.
+*come up with|bulmak, ortaya atmak|devise|The team needs to ---- a better solution before Monday.
+*bring about|neden olmak, yol açmak|cause|New technologies can ---- rapid changes in society.|cause
+result in|sonuçlanmak|lead to|Heavy rain can ---- flooding in low-lying areas.|cause
+give rise to|yol açmak|produce|Poor living conditions can ---- many health problems.|cause
+lead to|yol açmak|cause|Lack of sleep can ---- serious problems at work.|cause
+stem from|kaynaklanmak|originate from|Many health problems ---- a poor diet.
+give up|vazgeçmek, bırakmak|quit|The doctor advised him to ---- smoking immediately.
+*take on|üstlenmek|undertake|She felt ready to ---- more responsibility at work.
+consist of|-den oluşmak|comprise|A healthy breakfast should ---- fruit, grains and some protein.
+*put off|ertelemek|postpone|Never ---- until tomorrow what you can do today.|post
+call off|iptal etmek|cancel|Organisers may ---- the concert because of the storm.|post
+*turn down|reddetmek|reject|It was difficult to ---- such a generous job offer.
+*make up for|telafi etmek|compensate for|He worked extra hours to ---- the time he had lost.
+*do away with|ortadan kaldırmak|abolish|Some schools want to ---- traditional written exams.|rem
+wipe out|yok etmek|destroy|A single disease could ---- the entire population of these frogs.|rem
+get rid of|-den kurtulmak|remove|It is very difficult to ---- plastic waste completely.|rem
+set up|kurmak|establish|The two friends decided to ---- their own business.
+point out|belirtmek, dikkat çekmek|indicate|The teacher was quick to ---- the mistakes in my essay.
+find out|öğrenmek, keşfetmek|discover|Scientists are trying to ---- why bees are disappearing.
+break down|parçalamak; bozulmak|decompose|Enzymes in the stomach ---- food into smaller molecules.
+*take over|devralmak, kontrolü ele almak|assume control of|A larger company plans to ---- the struggling airline.
+put forward|ileri sürmek, önermek|propose|The scientist decided to ---- a new theory about the origin of life.
+bring up|yetiştirmek; gündeme getirmek|raise|It was difficult for her to ---- three children on her own.
+set out|yola çıkmak; ortaya koymak|depart|The explorers plan to ---- for the South Pole next month.|go
+turn out|ortaya çıkmak, sonuçlanmak|prove|The rumours might ---- to be true.
+run out of|tükenmek, bitmek|use up|Many hospitals may soon ---- basic medicines.
+cut down on|azaltmak|reduce|Doctors advise people to ---- sugar and salt.
+look into|araştırmak, incelemek|investigate|The police promised to ---- the complaint.
+rule out|olasılık dışı bırakmak|exclude|Doctors cannot ---- the possibility of an infection.
+die out|nesli tükenmek|become extinct|Many local languages may ---- within a century.
+keep up with|ayak uydurmak|keep pace with|Small shops find it hard to ---- large supermarkets.
+look up to|saygı duymak, örnek almak|admire|Young athletes often ---- famous sports stars.
+look down on|küçümsemek|despise|It is wrong to ---- people because of their jobs.
+end up|sonunda ... olmak|finish|People who never save money often ---- in debt.
+refrain from|kaçınmak|avoid|Visitors are asked to ---- touching the paintings.
+*put aside|bir kenara koymak, biriktirmek|save|She tries to ---- some money every month.
+*give away|bedava vermek; ele vermek|donate|The company plans to ---- free books to local schools.
+bring back|geri getirmek|restore|The new mayor promised to ---- the old tram system.
+show off|gösteriş yapmak|boast|Some people buy expensive cars just to ----.
+pick up|(dil, alışkanlık) kapmak|learn|Children can ---- a new language very quickly.|learn
+set off|tetiklemek; yola çıkmak|trigger|Even a small amount of smoke can ---- the fire alarm.|go
+come across|rastlamak|encounter|You may ---- many unfamiliar words when reading scientific texts.
+go through|yaşamak, geçirmek|experience|Many teenagers ---- periods of low self-confidence.
+fall behind|geride kalmak|lag behind|Students who miss many classes often ---- their classmates.
+`;
+/* Bağlaçlar: kelime | Türkçe | ilişki türü (aynı türden çeldirici gelmez) | cümle */
+const D_C = `
+*although|-e rağmen (+cümle)|con|---- the task was difficult, she finished it on time.
+even though|-e rağmen (+cümle)|con|---- he had studied hard, he failed the exam.
+*whereas|oysa, -iken|cmp|Some people prefer tea, ---- others cannot start the day without coffee.
+while|-iken; oysa|cmp|---- some species are declining, others are increasing in number.
+*despite|-e rağmen (+isim)|conN|---- the heavy traffic, we arrived on time.
+in spite of|-e rağmen (+isim)|conN|The match continued ---- the heavy rain.
+*unless|-medikçe, -mezse|cond|You will not improve ---- you practise regularly.
+*provided that|şartıyla|cond|The plan will succeed ---- everyone does their part.
+*as long as|-dığı sürece|cond|You can borrow my car ---- you drive carefully.
+*in case|olur diye, ihtimaline karşı|prec|Take an umbrella with you ---- it rains.
+*even if|-se bile|evif|The match will still take place ---- it rains tomorrow.
+*so that|-sın diye|purp|She spoke slowly ---- everyone could understand her.
+in order to|-mek için|purp|Many people exercise regularly ---- reduce stress.
+because|çünkü|cause|The roads were closed ---- the river had flooded.
+*since|çünkü; -den beri|cause|---- you are so tired, you should go to bed early.
+*due to|yüzünden, nedeniyle (+isim)|causeN|The flight was cancelled ---- bad weather.
+owing to|nedeniyle (+isim)|causeN|The factory closed ---- serious financial problems.
+*thanks to|sayesinde|causeN|---- modern medicine, people are living longer than ever before.
+as a result of|sonucu olarak|causeN|Many seabirds died ---- the oil spill.
+therefore|bu yüzden|res|The bridge was badly damaged; ----, it was closed to traffic.
+thus|böylece, bu yüzden|res|Plants absorb carbon dioxide and ---- help reduce global warming.
+consequently|sonuç olarak|res|He did not study at all; ----, he failed the test.
+however|ancak, fakat|contr|The plan seemed perfect. ----, it failed for several reasons.
+nevertheless|yine de|contr|The weather was terrible; ----, thousands of people came to the concert.
+moreover|dahası|add|The flat is cheap; ----, it is close to the city centre.
+furthermore|ayrıca, üstelik|add|Exercise improves your physical health. ----, it can make you happier.
+in addition to|-e ek olarak|addN|---- English, she speaks French and German.
+as well as|-in yanı sıra|addN|The course teaches writing ---- speaking skills.
+*such as|gibi|ex|Fruits ---- oranges and lemons are rich in vitamin C.
+for instance|örneğin|exS|Some birds cannot fly; ----, penguins and ostriches live on the ground.
+*once|-ir -mez, bir kez ... -ince|time|---- you learn the basic rules, the game becomes quite easy.
+*until|-e kadar|till|The museum will remain closed ---- the repairs are completed.
+as soon as|-ir -mez|time|Call me ---- you arrive at the airport.
+*rather than|-den ziyade, yerine|alt|Many people now read the news online ---- in printed newspapers.
+*instead of|yerine (+isim)|alt|You should drink water ---- sugary drinks.
+*unlike|-den farklı olarak|cmpN|---- her sister, Anna really enjoys cooking.
+similar to|-e benzer|cmpN|The disease causes symptoms ---- those of the flu.
+*just as|tıpkı ... gibi|cmpS|---- plants need sunlight, people need social contact.
+*regardless of|-e bakılmaksızın|reg|Everyone should have access to education, ---- their income.
+*in terms of|açısından|resp|The two phones are almost identical ---- price and quality.
+*whether|-ıp -madığını|wh|Scientists are still unsure ---- the new treatment will work.
+as if|-mış gibi|asif|He talks ---- he knows everything.
+otherwise|aksi takdirde|oth|You must book early; ----, there may be no tickets left.
+on behalf of|adına|beh|The lawyer spoke ---- the victims' families.
+by means of|aracılığıyla|means|The information is transmitted ---- electrical signals.
+except for|dışında|exc|All the students passed the exam ---- two.
+apart from|dışında; -in yanı sıra|exc|---- a few minor errors, the report was excellent.
+according to|-e göre|acc|---- the weather forecast, it will snow tomorrow.
+`;
+/* Cloze paragrafları: [başlık, metin (1)..(n) boşluklar, [[doğru, çeldirici x4], ...]] — tümü özgün */
+const CLOZE = [
+["Uyku ve Hafıza",
+"Scientists have long known that sleep is (1) for memory. During deep sleep, the brain replays the experiences of the day and stores them more firmly. (2), people who sleep badly often find it difficult to remember new information. A recent study (3) that even a short afternoon nap can improve learning. (4), too much sleep may also be harmful, so experts recommend seven to nine hours a night. Researchers now hope to (5) new treatments for people who suffer from memory problems.",
+[["essential","redundant","hostile","obsolete","reluctant"],["Consequently","Otherwise","Unless","Whereas","In case"],["revealed","deteriorated","complied","hesitated","eradicated"],["However","Moreover","For instance","Therefore","Similarly"],["come up with","put up with","look down on","give away","fall behind"]]],
+["Arıların Azalması",
+"Bees play a (1) role in food production, as they pollinate about one third of the crops we eat. In recent decades, however, bee populations have declined (2) in many parts of the world. Scientists believe that this decline (3) several factors, including pesticides, disease and the loss of natural habitats. (4) farmers change the way they use chemicals, the problem may become even worse. Some governments have already (5) strict limits on certain pesticides.",
+[["crucial","reluctant","vague","redundant","peculiar"],["dramatically","deliberately","respectively","conversely","presumably"],["stems from","puts off","looks up to","gives away","sets off"],["Unless","Once","Since","Whereas","Just as"],["imposed","complied","hesitated","thrived","emerged"]]],
+["Çevrim İçi Eğitim",
+"Online learning has become increasingly (1) since the beginning of the century. It gives students (2) to courses from the best universities, (3) where they live. (4), studying alone at home is not easy for everyone. Many learners find it hard to (5) their motivation without a teacher or classmates.",
+[["widespread","fragile","hostile","reluctant","intact"],["access","obstacle","shortage","drawback","threat"],["regardless of","thanks to","on behalf of","as a result of","instead of"],["Nevertheless","Therefore","For instance","Moreover","Similarly"],["maintain","eradicate","refute","inhabit","herald"]]],
+["Okyanustaki Plastik",
+"Every year, millions of tonnes of plastic end up in the world's oceans. This plastic does not disappear; (1), it slowly breaks into tiny pieces called microplastics. These particles are eaten by fish and can (2) enter the human food chain. Scientists are especially worried about the long-term (3) for human health. For this reason, several countries have decided to (4) single-use plastic bags.",
+[["instead","otherwise","likewise","unless","whereas"],["eventually","respectively","deliberately","conversely","merely"],["implications","aspirations","compensations","excuses","remnants"],["do away with","look up to","keep up with","make up for","come across"]]],
+["Dil Öğrenmek",
+"Children seem to (1) a second language much more easily than adults. This does not mean, however, that adults cannot learn well. (2), adults often have better study skills and a larger vocabulary in their first language. Learners who study a little every day usually make (3) progress. (4) you keep practising regularly, you will (5) reach your goal.",
+[["pick up","put off","turn down","call off","die out"],["In fact","Otherwise","Unless","Even if","Whereas"],["significant","reluctant","hostile","obsolete","intact"],["As long as","Unless","Whereas","Rather than","Even though"],["eventually","previously","conversely","respectively","merely"]]],
+["Kentleşme",
+"More than half of the world's population now lives in cities, and this figure is expected to rise (1) in the coming decades. Cities offer better job (2) and services, which is why so many people leave rural areas. (3), rapid growth also creates problems such as traffic, pollution and a (4) of affordable housing. City planners must (5) these problems before they become impossible to solve.",
+[["significantly","inadvertently","respectively","conversely","barely"],["prospects","remnants","excuses","precautions","deficiencies"],["However","Moreover","Therefore","For instance","Likewise"],["shortage","abundance","consensus","recognition","dedication"],["tackle","inhabit","herald","refute","hesitate"]]],
+["Antibiyotik Direnci",
+"Antibiotics are among the most important medical discoveries in history. (1), their (2) use in medicine and farming has created a serious problem: bacteria that no longer respond to treatment. Experts warn that common infections could become deadly again (3) urgent action is taken. Doctors are therefore being asked to prescribe antibiotics only when they are (4) necessary, and patients are advised to (5) the full course of treatment.",
+[["However","Similarly","Therefore","For instance","In addition"],["excessive","tolerable","intact","eager","indifferent"],["unless","so that","whereas","just as","once"],["absolutely","inadvertently","respectively","conversely","previously"],["carry out","look down on","put up with","show off","fall behind"]]],
+["Göç ve Kültür",
+"Migration has shaped human societies for thousands of years. People move for many reasons, (1) war, poverty and the search for better opportunities. When they arrive in a new country, migrants often (2) difficulties such as learning a new language and finding work. (3), they also bring new ideas, skills and traditions that can (4) the culture of their new home. Many cities owe their economic success (5) the contribution of migrants.",
+[["such as","regardless of","instead of","unlike","except for"],["confront","inhabit","refute","herald","deplete"],["At the same time","Otherwise","Unless","As if","In case"],["enhance","deteriorate","hesitate","comply","refrain"],["to","from","on","over","against"]]]
+];
+const D_N2 = `
+disorder|bozukluk, hastalık||The child was diagnosed with a rare genetic ---- at the age of two.
+organism|organizma, canlı||Every living ---- needs energy to survive.
+symptom|belirti||Fever is a common ---- of many infections.
+infection|enfeksiyon||Washing your hands regularly reduces the risk of ----.
+resource|kaynak||Water is the most precious natural ---- in the desert.
+tissue|doku||Scar ---- forms when a wound heals.
+atmosphere|atmosfer; ortam||Carbon dioxide traps heat in the Earth's ----.
+pattern|örüntü, düzen||Scientists noticed a clear ---- in the timing of the earthquakes.
+characteristic|özellik||Large ears are the most obvious ---- of the African elephant.
+discovery|keşif||The ---- of penicillin changed medicine forever.
+experiment|deney||The students carried out a simple ---- to test their idea.
+therapy|terapi, tedavi||Music ---- can help patients relax before surgery.
+substance|madde||Lead is a toxic ---- that can damage the brain.
+technique|teknik, yöntem||The artist developed a new painting ---- using sand and oil.
+relation|ilişki||There is a close ---- between diet and heart disease.
+element|unsur, öğe||Trust is an essential ---- of any friendship.
+revolution|devrim||The Industrial ---- began in Britain in the eighteenth century.
+depression|depresyon; ekonomik bunalım||Lack of sunlight can contribute to ---- in winter.
+expert|uzman||An ---- in child psychology was invited to speak at the conference.
+illness|hastalık||He missed several weeks of school because of a serious ----.
+habitat|yaşam alanı||Destruction of their natural ---- threatens many species.
+difficulty|zorluk||Many immigrants have ---- finding a job at first.
+infant|bebek||A newborn ---- sleeps for up to seventeen hours a day.
+principle|ilke||Equality before the law is a basic ---- of democracy.
+extent|derece, boyut||Scientists are still unsure of the ---- of the damage.
+radiation|radyasyon||Exposure to high levels of ---- can cause cancer.
+consumption|tüketim||Energy ---- rises sharply during the winter months.
+detail|ayrıntı||The report describes the accident in great ----.
+personality|kişilik||Your ---- shapes the way you react to stress.
+colony|koloni||An ant ---- can contain millions of individuals.
+improvement|gelişme, iyileşme||There has been a clear ---- in the patient's condition.
+origin|köken||The ---- of the universe is still a subject of debate.
+institution|kurum||A university is an ---- of higher education.
+diagnosis|teşhis||An early ---- can save a patient's life.
+nutrient|besin maddesi||Protein is an essential ---- for growth.
+belief|inanç||The ---- that the Earth was flat was common in ancient times.
+invention|icat||The ---- of the telephone changed communication forever.
+independence|bağımsızlık||The country gained its ---- in 1960.
+emotion|duygu||Fear is a powerful ---- that protects us from danger.
+emission|salım, emisyon||The factory must reduce its ---- of harmful gases.
+tradition|gelenek||Drinking tea in the afternoon is a British ----.
+obesity|obezite||Poor diet and lack of exercise are the main causes of ----.
+attitude|tutum||A positive ---- can help you recover more quickly.
+molecule|molekül||A water ---- consists of two hydrogen atoms and one oxygen atom.
+impression|izlenim||She made a very good ---- at the job interview.
+vaccine|aşı||A new ---- against the virus was developed in less than a year.
+ecosystem|ekosistem||Removing a single species can damage the entire ----.
+hormone|hormon||Insulin is a ---- that controls the level of sugar in the blood.
+colleague|iş arkadaşı||She discussed the problem with a ---- from another department.
+prosperity|refah||Trade brought great ---- to the port city.
+innovation|yenilik||Technological ---- has transformed the way we work.
+unemployment|işsizlik||---- is particularly high among young people.
+anxiety|kaygı||Many students suffer from ---- before exams.
+habit|alışkanlık||Smoking is a difficult ---- to break.
+intake|alım (besin vb.)||Doctors advise reducing your daily ---- of salt.
+medication|ilaç tedavisi||The patient is on ---- for high blood pressure.
+contrast|zıtlık, karşıtlık||There is a sharp ---- between the rich and poor areas of the city.
+procedure|prosedür, işlem||The operation is a simple ---- that takes about an hour.
+possibility|olasılık||Scientists do not rule out the ---- of life on other planets.
+wealth|zenginlik||The country's ---- comes mainly from oil.
+layer|katman||The ozone ---- protects us from harmful rays.
+formation|oluşum||The ---- of a new star can take millions of years.
+observation|gözlem||The theory is based on careful ---- of animal behaviour.
+architecture|mimari||The city is famous for its Gothic ----.
+sample|örnek, numune||The doctor took a blood ---- for testing.
+compound|bileşik||Salt is a chemical ---- of sodium and chlorine.
+extinction|nesli tükenme||Many species face ---- because of habitat loss.
+symbol|sembol||The dove is a ---- of peace.
+cycle|döngü||The water ---- describes how water moves around the planet.
+scholar|akademisyen, bilgin||The ancient text was translated by a famous ----.
+explanation|açıklama||There is no simple ---- for the sudden rise in prices.
+interaction|etkileşim||Social ---- is important for children's development.
+resistance|direnç||Some bacteria have developed ---- to common antibiotics.
+definition|tanım||There is no single ---- of intelligence.
+critic|eleştirmen||The film was praised by every major ----.
+disability|engellilik||The building has been adapted for people with a physical ----.
+similarity|benzerlik||There is a striking ---- between the two paintings.
+dose|doz||Never take more than the recommended ---- of this medicine.
+drought|kuraklık||The long ---- destroyed most of the crops.
+disaster|felaket||The earthquake was the worst natural ---- in the country's history.
+satellite|uydu||The ---- sends weather data back to Earth every hour.
+biodiversity|biyoçeşitlilik||Tropical forests are home to incredible ----.
+existence|varlık, mevcudiyet||Scientists have confirmed the ---- of water on Mars.
+frequency|sıklık||The ---- of heat waves has increased in recent years.
+civilization|uygarlık||The Maya built an advanced ---- in Central America.
+treaty|antlaşma||The two countries signed a peace ---- in 1920.
+achievement|başarı||Landing on the Moon was a great scientific ----.
+lifestyle|yaşam tarzı||A healthy ---- includes regular exercise and good food.
+efficiency|verimlilik||New machines have greatly improved the ---- of the factory.
+concentration|dikkat; yoğunluk||Lack of sleep affects your ---- at work.
+regulation|düzenleme, denetim||The government introduced strict ---- of the banking sector.
+immigrant|göçmen||He was a young ---- who came to the country with nothing.
+barrier|engel, bariyer||Language can be a major ---- to finding a job abroad.
+quantity|miktar||The factory produces a large ---- of plastic waste.
+component|bileşen||Trust is a key ---- of successful teamwork.
+reduction|azalma, indirim||The new policy led to a sharp ---- in crime.
+intensity|yoğunluk, şiddet||The ---- of the storm surprised everyone.
+participant|katılımcı||Each ---- in the study was paid a small fee.
+destruction|yıkım||The war caused the ---- of many historic buildings.
+exploration|keşif||Space ---- has led to many useful inventions.
+addiction|bağımlılık||---- to gambling can destroy families.
+trend|eğilim||There is a growing ---- towards working from home.
+migration|göç||The annual ---- of birds covers thousands of kilometres.
+popularity|popülerlik||The ---- of electric bikes has grown rapidly.
+mutation|mutasyon||A single genetic ---- can cause a serious disease.
+evolution|evrim||Darwin's theory of ---- changed our view of nature.
+measurement|ölçüm||Accurate ---- of temperature is essential in this experiment.
+gender|cinsiyet||The company does not pay workers differently according to ----.
+facility|tesis||The city built a new sports ---- for young people.
+prevention|önleme||---- is better than cure.
+formula|formül||There is no magic ---- for success.
+territory|toprak, bölge||The island became British ---- in the nineteenth century.
+poverty|yoksulluk||Millions of children still live in extreme ----.
+percentage|yüzde, oran||A high ---- of students passed the exam.
+emphasis|vurgu||The school places great ---- on sport.
+humanity|insanlık||Climate change is one of the greatest challenges facing ----.
+delay|gecikme||The flight was cancelled after a long ----.
+laboratory|laboratuvar||The samples were sent to a ---- for testing.
+expectation|beklenti||Contrary to every ----, the small team won the championship.
+supplement|takviye||Many people take a vitamin ---- every day.
+landscape|manzara, arazi||The ---- of the region is dominated by mountains.
+syndrome|sendrom||Down ---- is a genetic condition.
+reward|ödül||Children should receive a ---- for good behaviour.
+eruption|patlama (volkan)||The ---- of the volcano destroyed the city of Pompeii.
+reputation|itibar, ün||The restaurant has an excellent ---- for fresh fish.
+expansion|genişleme||The rapid ---- of the city has caused traffic problems.
+priority|öncelik||Safety is our top ----.
+settlement|yerleşim yeri; uzlaşma||The first ---- in the area was built around 3000 BC.
+hypothesis|hipotez||The experiment was designed to test the ----.
+assistance|yardım||The government provided financial ---- to the flood victims.
+wage|ücret||Many workers earn only the minimum ----.
+relief|rahatlama; yardım||The medicine brought quick ---- from the pain.
+mystery|gizem||How the pyramids were built remains a ----.
+inflation|enflasyon||High ---- has reduced the value of people's savings.
+employment|istihdam||The new factory will provide ---- for 500 people.
+circumstance|durum, koşul||Under no ---- should you open this door.
+output|çıktı, üretim||The factory's ---- has doubled this year.
+discipline|disiplin; bilim dalı||Psychology is a relatively young academic ----.
+adaptation|uyum, adaptasyon||Thick fur is an ---- to cold climates.
+nutrition|beslenme||Good ---- is essential for children's growth.
+ancestor|ata||Humans and chimpanzees share a common ----.
+composition|bileşim||Scientists analysed the chemical ---- of the rock.
+sequence|sıra, dizi||The events happened in a strange ----.
+stimulus|uyaran||The eye reacts to light, which acts as a ----.
+volunteer|gönüllü||Every ---- at the hospital receives special training.
+assessment|değerlendirme||The teacher's ---- of the student was very positive.
+welfare|refah, sosyal yardım||The organisation works for the ---- of street children.
+occupation|meslek; işgal||Please write your name and ---- on the form.
+inhabitant|sakin, yaşayan||Every ---- of the village knows everyone else.
+regime|rejim||The old ---- was replaced by a democratic government.
+invasion|istila||The ---- of the island began early in the morning.
+tolerance|hoşgörü; tolerans||Religious ---- is essential in a diverse society.
+limitation|sınırlılık||One ---- of the study is the small number of participants.
+conclusion|sonuç, kanı||After long discussions, the committee reached a ----.
+defect|kusur||The car was recalled because of a serious ---- in its brakes.
+conquest|fetih||The Norman ---- of England took place in 1066.
+excess|fazlalık||An ---- of sugar in the diet can lead to diabetes.
+perspective|bakış açısı||Travelling abroad gives you a new ---- on your own country.
+proportion|oran||A large ---- of the population lives in rural areas.
+establishment|kuruluş||The ---- of the university took almost ten years.
+deficit|açık (bütçe)||The government plans to reduce the budget ----.
+peer|akran||Teenagers often feel ---- pressure to smoke.
+witness|tanık||The police are looking for a ---- to the accident.
+complication|komplikasyon||The patient developed a serious ---- after surgery.
+transformation|dönüşüm||The city has undergone a complete ---- in the last decade.
+minority|azınlık||Only a small ---- of people voted against the plan.
+category|kategori||The competition has a special ---- for young writers.
+stability|istikrar||Economic ---- attracts foreign investment.
+parasite|parazit||A ---- lives on or inside another organism.
+punishment|ceza||The ---- should fit the crime.
+acquisition|edinim; satın alma||Children's language ---- happens very quickly.
+transmission|aktarım, bulaşma||The ---- of the virus occurs through the air.
+boundary|sınır||The river forms a natural ---- between the two countries.
+inflammation|iltihaplanma||Ice can reduce ---- and pain after an injury.
+error|hata||A simple ---- in the calculation caused the rocket to crash.
+pollutant|kirletici||Lead is a dangerous ---- found in old paint.
+severity|şiddet, ciddiyet||Doctors must assess the ---- of the injury.
+cooperation|işbirliği||The project was completed thanks to international ----.
+custom|gelenek, örf||It is a local ---- to remove your shoes when entering a home.
+norm|norm, olağan durum||Working from home has become the ---- for many office workers.
+dispute|anlaşmazlık||The two neighbours had a long ---- over the garden wall.
+victim|kurban, mağdur||The ---- of the robbery was taken to hospital.
+mortality|ölüm oranı||Infant ---- has fallen sharply over the past century.
+motivation|motivasyon||Lack of ---- is a common problem among online learners.
+density|yoğunluk||The population ---- of the city is very high.
+mixture|karışım||Air is a ---- of different gases.
+distinction|ayrım||There is an important ---- between weather and climate.
+conservation|koruma||Wildlife ---- is important for future generations.
+epidemic|salgın||The flu ---- closed many schools.
+productivity|verimlilik||Short breaks can increase workers' ----.
+tension|gerginlik||There is growing ---- between the two countries.
+publication|yayın||The ---- of the report caused a public debate.
+guideline|kılavuz ilke||The new ---- recommends thirty minutes of exercise a day.
+alliance|ittifak||The two parties formed an ---- to win the election.
+corruption|yolsuzluk||The minister resigned after being accused of ----.
+infrastructure|altyapı||The country needs to invest in roads, bridges and other ----.
+inequality|eşitsizlik||Income ---- has increased in many countries.
+prevalence|yaygınlık||The ---- of diabetes is rising around the world.
+immunity|bağışıklık||Vaccines help the body build ---- against disease.
+prejudice|önyargı||She faced ---- because of her accent.
+circulation|dolaşım||Regular exercise improves blood ----.
+literacy|okuryazarlık||Adult ---- rates have risen in most countries.
+indicator|gösterge||Unemployment is an important ---- of economic health.
+prediction|tahmin||The scientist's ---- turned out to be correct.
+incidence|görülme sıklığı||The ---- of skin cancer is higher in sunny countries.
+legislation|mevzuat, yasalar||New ---- protects workers' rights.
+obligation|yükümlülük||Parents have a legal ---- to send their children to school.
+catastrophe|felaket||Scientists warn that rising sea levels could lead to a ----.
+endurance|dayanıklılık||Marathon running requires great ----.
+notion|kavram, düşünce||The ---- that money brings happiness is not always true.
+sensation|his, duyu||She felt a burning ---- in her throat.
+heritage|miras||The old town is part of our cultural ----.
+inability|yapamama, yetersizlik||His ---- to concentrate worried his teachers.
+satisfaction|memnuniyet||Customer ---- is our main goal.
+storage|depolama||The safe ---- of nuclear waste is a serious problem.
+erosion|erozyon, aşınma||Trees help to prevent soil ----.
+approval|onay||The drug has not yet received government ----.
+interpretation|yorum||Her ---- of the data was different from mine.
+starvation|açlık||Thousands of people died of ---- during the famine.
+precision|kesinlik||Surgeons must work with great ----.
+outbreak|salgın, patlak verme||An ---- of cholera was reported in the region.
+discrimination|ayrımcılık||The law forbids ---- on the basis of race.
+criticism|eleştiri||The new policy received strong ---- from teachers.
+breakthrough|çığır açan buluş||The discovery was a major ---- in cancer research.
+preference|tercih||Many customers show a clear ---- for local products.
+accuracy|doğruluk||The ---- of weather forecasts has improved greatly.
+restriction|kısıtlama||There is a ---- on the number of passengers in each car.
+offspring|yavru, döl||Birds feed their ---- until they can fly.
+integration|bütünleşme||The ---- of immigrants into society takes time.
+consciousness|bilinç||The patient lost ---- after the accident.
+curriculum|müfredat||Coding has been added to the school ----.
+fertility|doğurganlık||Stress can reduce ----.
+criterion|ölçüt||Price is not the only ---- when choosing a phone.
+absence|yokluk; devamsızlık||In the ---- of evidence, the man was released.
+wisdom|bilgelik||Grandparents can share their ---- with the young.
+susceptibility|yatkınlık||Certain genes can increase ---- to heart disease.
+forecast|tahmin (hava vb.)||The weather ---- says it will rain tomorrow.
+stereotype|kalıp yargı||The film challenges the ---- that women are bad at science.
+`;
+/* Okuma parçalarında sık geçen konu kelimeleri (bilim, sağlık, doğa, tarih) */
+const D_T = `
+bacterium|bakteri||A single ---- can divide into two in about twenty minutes.
+virus|virüs||The flu is caused by a ---- that changes every year.
+antibiotic|antibiyotik||An ---- is useless against the common cold.
+allergy|alerji||She has a severe ---- to peanuts.
+tumour|tümör||Surgeons removed the ---- from his brain.
+cancer|kanser||Smoking is the main cause of lung ----.
+diabetes|şeker hastalığı||Type 2 ---- is closely linked to obesity.
+asthma|astım||Air pollution can make ---- worse.
+cholesterol|kolesterol||Eating too much fat can raise your ----.
+protein|protein||Meat, eggs and beans are rich in ----.
+vitamin|vitamin||Oranges are an excellent source of ---- C.
+carbohydrate|karbonhidrat||Bread and pasta contain a lot of ----.
+enzyme|enzim||An ---- in saliva starts breaking down food in the mouth.
+muscle|kas||Regular exercise builds ---- and strengthens bones.
+nerve|sinir||Damage to a ---- can cause loss of feeling.
+kidney|böbrek||The ---- removes waste products from the blood.
+liver|karaciğer||Too much alcohol can damage the ----.
+lung|akciğer||Smoking damages the ----, making breathing difficult.
+bloodstream|kan dolaşımı||The drug enters the ---- within minutes.
+immune system|bağışıklık sistemi||A healthy diet supports your ----.
+pathogen|hastalık yapıcı mikrop||A ---- is any organism that causes disease.
+fossil|fosil||Scientists found a dinosaur ---- in the desert.
+species|tür||More than a million ---- are at risk of extinction.
+mammal|memeli||The whale is the largest ---- on Earth.
+predator|yırtıcı hayvan||The lion is the top ---- in the African savannah.
+prey|av||The eagle watched its ---- from high above.
+insect|böcek||The bee is an ---- that produces honey.
+glacier|buzul||The ---- has retreated several kilometres in the last century.
+volcano|yanardağ||Mount Etna is an active ---- in Sicily.
+earthquake|deprem||The ---- measured 7.2 on the Richter scale.
+fertilizer|gübre||Too much ---- can pollute rivers and lakes.
+pesticide|böcek ilacı||The use of this ---- has been banned in Europe.
+greenhouse gas|sera gazı||Methane is a ---- that traps heat in the atmosphere.
+carbon dioxide|karbondioksit||Trees absorb ---- and release oxygen.
+rainforest|yağmur ormanı||The Amazon ---- produces a large share of the world's oxygen.
+renewable energy|yenilenebilir enerji||Solar power is a popular form of ----.
+fossil fuel|fosil yakıt||Coal is a ---- that releases a lot of carbon dioxide.
+empire|imparatorluk||The Roman ---- lasted for centuries.
+colonialism|sömürgecilik||Many African countries suffered under European ----.
+dynasty|hanedan||The Ming ---- ruled China for almost 300 years.
+archaeologist|arkeolog||The ---- spent years digging at the ancient site.
+manuscript|el yazması||The ancient ---- was found in a desert cave.
+ritual|ritüel, tören||Burning incense was part of a religious ----.
+monarchy|monarşi||Britain is a constitutional ----.
+peasant|köylü||In medieval times, a ---- worked on the land of a lord.
+astronomer|gökbilimci||The ---- discovered a new planet using a powerful telescope.
+telescope|teleskop||The new space ---- can see galaxies billions of light years away.
+orbit|yörünge||The satellite will remain in ---- for ten years.
+gravity|yerçekimi||The Moon's ---- causes the tides.
+particle|parçacık||An electron is a tiny ---- with a negative charge.
+atom|atom||An ---- consists of a nucleus and electrons.
+genome|genom||Scientists have mapped the entire human ----.
+chromosome|kromozom||Each ---- carries hundreds of genes.
+cell|hücre||The ---- is the basic unit of all living things.
+embryo|embriyo||The ---- develops rapidly in the first weeks of pregnancy.
+neuron|sinir hücresi||A ---- sends electrical signals to other cells.
+metabolism|metabolizma||Exercise can speed up your ----.
+pregnancy|hamilelik||Women should avoid alcohol during ----.
+surgeon|cerrah||The ---- performed a difficult heart operation.
+physician|hekim||You should consult a ---- before starting the diet.
+placebo|plasebo||Half the patients received the real drug and half received a ----.
+side effect|yan etki||Drowsiness is a common ---- of this medicine.
+insomnia|uykusuzluk||Stress and caffeine can both cause ----.
+dementia|bunama||Alzheimer's is the most common form of ----.
+malnutrition|yetersiz beslenme||---- is a major cause of child deaths in poor countries.
+hygiene|hijyen||Poor ---- helps diseases spread.
+sanitation|sağlık koşulları, kanalizasyon||Clean water and good ---- have saved millions of lives.
+irrigation|sulama||Farmers in dry regions depend on ----.
+harvest|hasat||A good ---- depends on the weather.
+livestock|çiftlik hayvanları||Farmers lost much of their ---- during the drought.
+pollination|tozlaşma||Bees play a key role in the ---- of crops.
+photosynthesis|fotosentez||Plants make their own food through ----.
+sediment|tortu||Layers of ---- built up at the bottom of the lake.
+tide|gelgit||Fishermen wait for the ---- to go out.
+continent|kıta||Africa is the second largest ---- in the world.
+hemisphere|yarımküre||Australia is in the southern ----.
+urbanisation|kentleşme||Rapid ---- has created huge slums around many cities.
+globalization|küreselleşme||---- has made it easier for companies to trade worldwide.
+democracy|demokrasi||In a ----, citizens choose their leaders.
+parliament|parlamento||The new law was approved by ----.
+censorship|sansür||The government was accused of internet ----.
+`;
+const D_A2 = `
+genetic|genetik||Cystic fibrosis is a ---- disease passed from parents to children.
+chemical|kimyasal||Water pollution is often caused by ---- waste from factories.
+biological|biyolojik||Sleep is a basic ---- need.
+psychological|psikolojik||Stress can cause both physical and ---- problems.
+technological|teknolojik||---- progress has made daily life easier in many ways.
+efficient|verimli||LED bulbs are much more ---- than traditional ones.|eff
+vast|çok geniş||The Sahara is a ---- desert covering much of North Africa.|big
+agricultural|tarımsal||Most of the land in the region is used for ---- purposes.
+academic|akademik||She has published many ---- articles on climate change.
+vital|hayati||Clean water is ---- for good health.|imp
+cognitive|bilişsel||Reading helps develop children's ---- skills.
+accurate|doğru, kesin||The police need an ---- description of the thief.|exact
+visual|görsel||Most people have a strong ---- memory.
+rapid|hızlı||The country has experienced ---- economic growth.|fast
+extreme|aşırı, uç||Polar bears are adapted to ---- cold.
+reliable|güvenilir||The old car is still very ----.
+fundamental|temel||Freedom of speech is a ---- human right.|imp
+creative|yaratıcı||Children are naturally ---- and curious.
+clinical|klinik||The new drug is still in ---- trials.
+enormous|devasa||The project will cost an ---- amount of money.|big
+tropical|tropik||Bananas grow well in ---- climates.
+constant|sürekli, sabit||The old fridge makes a ---- noise.
+artificial|yapay||Many soft drinks contain ---- sweeteners.
+ordinary|sıradan||The film tells the story of an ---- family.
+conventional|geleneksel, alışılmış||Electric cars are much quieter than ---- cars.
+resistant|dirençli||This material is ---- to heat and water.
+permanent|kalıcı||The accident caused ---- damage to his eyesight.
+valuable|değerli||The museum contains many ---- paintings.
+organic|organik||---- farming does not use chemical fertilizers.
+deadly|ölümcül||Malaria is still a ---- disease in many countries.|fatal
+radical|köklü, radikal||The new government promised ---- changes.
+suitable|uygun||This film is not ---- for young children.
+sensitive|hassas, duyarlı||Babies' skin is very ---- to sunlight.
+universal|evrensel||Music is often called a ---- language.
+magnetic|manyetik||The Earth has a ---- field that protects it from solar wind.
+oral|sözlü; ağızla ilgili||The students must take both a written and an ---- exam.
+respiratory|solunumla ilgili||Asthma is a common ---- disease.
+external|dış||The company hired an ---- expert to check its accounts.
+stable|istikrarlı, dengeli||The patient's condition is now ----.
+intellectual|zihinsel, entelektüel||Chess is a game of ---- skill.
+diverse|çeşitli||London is one of the most culturally ---- cities in the world.
+immediate|acil, anında||The situation requires ---- action.|urg
+marine|deniz ile ilgili||Plastic pollution is a serious threat to ---- life.
+intense|yoğun||The athletes follow an ---- training programme.
+ideal|ideal||The weather was ---- for a picnic.
+moral|ahlaki||Doctors often face difficult ---- decisions.|eth
+coastal|kıyı||Rising sea levels threaten many ---- cities.
+dependent|bağımlı||The region is heavily ---- on tourism.
+frequent|sık||He is a ---- visitor to the library.
+aggressive|saldırgan||Some dogs become ---- when they are frightened.
+strict|katı, sıkı||The school has ---- rules about mobile phones.
+rural|kırsal||Many young people leave ---- areas to find work in cities.
+ethical|etik||Cloning humans raises serious ---- questions.|eth
+harsh|sert, zorlu||Few plants can survive the ---- conditions of the desert.
+remote|uzak, ücra||The village is in a ---- mountain area.
+fertile|verimli (toprak)||The ---- soil around the river is ideal for farming.
+distinctive|ayırt edici||The bird has a ---- red patch on its head.
+indispensable|vazgeçilmez||Smartphones have become ---- in daily life.|imp
+fatal|ölümcül||A single mistake could be ---- in such a dangerous job.|fatal
+mild|hafif, ılıman||The region has ---- winters and hot summers.
+influential|etkili, nüfuzlu||She is one of the most ---- writers of her generation.
+reasonable|makul||The hotel offers comfortable rooms at ---- prices.
+broad|geniş||The course covers a ---- range of topics.
+renewable|yenilenebilir||Wind and solar power are ---- sources of energy.
+acute|akut, şiddetli||He was taken to hospital with ---- pain in his chest.
+endangered|nesli tükenmekte olan||The panda is an ---- species.
+violent|şiddet içeren||Children should not watch ---- films.
+neutral|tarafsız||Switzerland remained ---- during both world wars.
+ultimate|nihai||The ---- goal of the project is to end hunger.
+delicate|narin, hassas||Negotiations are at a very ---- stage.
+principal|başlıca, ana||The ---- cause of the fire was an electrical fault.
+subsequent|sonraki||The disease and the ---- treatment lasted two years.
+costly|masraflı||Repairing the old building would be very ----.
+protective|koruyucu||Workers must wear ---- clothing.
+temperate|ılıman||Most of Europe has a ---- climate.
+unprecedented|eşi görülmemiş||The pandemic caused ---- disruption to daily life.
+moderate|ılımlı, orta||Doctors recommend ---- exercise for older people.
+theoretical|teorik||The course is mainly ---- rather than practical.
+toxic|zehirli||Some plants are ---- to cats and dogs.|fatal
+exceptional|olağanüstü||She is an ---- student who always gets top marks.
+minimal|asgari, çok az||The storm caused only ---- damage.
+equivalent|eşdeğer||One mile is ---- to about 1.6 kilometres.
+valid|geçerli||Your passport must be ---- for at least six months.
+notable|dikkate değer||The town is ---- for its beautiful old churches.
+keen|hevesli||He is very ---- on football.
+superior|üstün||The new model is ---- to the old one in every way.
+contagious|bulaşıcı||Measles is a highly ---- disease.
+productive|verimli||Many people are more ---- in the morning.|eff
+temporary|geçici||He found a ---- job for the summer.
+harmless|zararsız||Most spiders are completely ---- to humans.
+insufficient|yetersiz||There was ---- evidence to convict him.
+competitive|rekabetçi||The job market is very ----.
+seasonal|mevsimlik||Many farm workers do ---- work.
+abstract|soyut||Love and freedom are ---- ideas.
+mysterious|gizemli||The ship disappeared in ---- circumstances.
+rational|akılcı, mantıklı||There must be a ---- explanation for this.|logic
+collective|ortak, toplu||Protecting the environment is our ---- responsibility.
+consistent|tutarlı||Her results have been ---- throughout the year.
+informal|resmi olmayan||The meeting was relaxed and ----.
+premature|erken, vakitsiz||The baby was born ---- and weighed only two kilograms.
+unpredictable|tahmin edilemez||The weather in the mountains is ----.
+noticeable|fark edilir||There has been a ---- improvement in her English.
+compulsory|zorunlu||Education is ---- until the age of sixteen.
+arbitrary|keyfi||The decision seemed completely ----, with no clear reason.
+plausible|akla yatkın||Her story sounded ----, so the police believed her.|logic
+tangible|somut||The new policy has produced few ---- results.
+negligible|önemsiz, ihmal edilebilir||The difference in price is ----, only a few cents.|small
+trivial|önemsiz, sıradan||They argued about something completely ----.|small
+rigid|katı, esnek olmayan||The company's ---- rules made workers unhappy.
+stagnant|durgun||The economy has been ---- for several years.
+marginal|marjinal, küçük||The new law had only a ---- effect on crime.|small
+implicit|örtük, ima edilen||There was an ---- threat in his words.
+explicit|açık, net||The teacher gave ---- instructions about the exam.
+superficial|yüzeysel||He has only a ---- knowledge of the subject.
+futile|boşuna, beyhude||All attempts to save the ship proved ----.
+inherent|doğasında olan||There are risks ---- in any kind of surgery.
+profound|derin||The book had a ---- influence on my thinking.
+`;
+const D_R2 = `
+mainly|çoğunlukla||The audience consisted ---- of students.|part
+greatly|büyük ölçüde||Her health has ---- improved since the operation.|deg
+increasingly|giderek artan biçimde||The internet is ---- used for shopping.
+frequently|sık sık||He ---- travels abroad for work.|freq
+rarely|nadiren||Snow ---- falls in this part of the country.|freq
+hardly|neredeyse hiç||I could ---- hear what she was saying.
+closely|yakından||The police are ---- watching the situation.
+effectively|etkili biçimde||The new drug ---- reduces pain.|eff
+essentially|esasen||The two plans are ---- the same.|part
+heavily|yoğun biçimde, çok||The region depends ---- on tourism.|deg
+equally|eşit derecede||Both teams played ---- well.
+normally|normalde||I ---- go to work by bus.|freq
+carefully|dikkatle||Read the instructions ---- before you begin.|eff
+naturally|doğal olarak||Some people are ---- good at languages.
+potentially|potansiyel olarak||The disease is ---- fatal if it is not treated.
+strongly|güçlü biçimde||I ---- recommend this book to all students.|deg
+regularly|düzenli olarak||You should check your blood pressure ----.|freq
+adversely|olumsuz biçimde||The drought ---- affected crop production.
+efficiently|verimli biçimde||The new system uses energy much more ----.|eff
+fairly|oldukça; adilce||The exam was ---- easy.|part
+successfully|başarıyla||The surgeons ---- removed the tumour.|eff
+partly|kısmen||The accident was ---- caused by bad weather.|part
+economically|ekonomik olarak||The project is not ---- viable.
+roughly|kabaca, yaklaşık||The trip took ---- two hours.|part
+traditionally|geleneksel olarak||----, the eldest son inherited the family farm.|time
+genetically|genetik olarak||---- modified crops are banned in some countries.
+mentally|zihinsel olarak||Chess helps to keep elderly people ---- active.
+elsewhere|başka yerde||If this shop is too expensive, you can buy it ----.
+enormously|muazzam derecede||The festival was ---- popular.|deg
+solely|yalnızca||The decision was made ---- by the director.
+historically|tarihsel olarak||----, the city was an important trading centre.|time
+remarkably|dikkat çekici biçimde||She looks ---- young for her age.|deg
+physically|fiziksel olarak||The job is ---- demanding.
+correctly|doğru biçimde||Make sure you answer all the questions ----.|eff
+annually|yıllık olarak||The festival is held ---- in July.|freq
+instantly|anında||The new website loads almost ----.
+continually|sürekli olarak||Prices have been rising ---- for months.|freq
+deeply|derinden||She was ---- moved by the film.|deg
+somewhat|biraz, bir ölçüde||The results were ---- disappointing.|part
+strictly|kesinlikle; sıkı biçimde||Smoking is ---- forbidden in the building.
+socially|sosyal olarak||Humans are ---- complex animals.
+actively|aktif olarak||Students are encouraged to take part ---- in class.
+undoubtedly|şüphesiz||She is ---- the best player in the team.
+occasionally|ara sıra||We ---- eat out at weekends.|freq
+consciously|bilinçli olarak||Most of our decisions are not made ----.
+independently|bağımsız olarak||The two scientists made the discovery ----.
+fundamentally|temelde||The two systems are ---- different.|part
+surprisingly|şaşırtıcı biçimde||The test was ---- easy.
+permanently|kalıcı olarak||He decided to move abroad ----.
+commercially|ticari olarak||The product was never ---- successful.
+nowadays|günümüzde||----, most people own a smartphone.|time
+scientifically|bilimsel olarak||The claim has not been ---- proven.
+partially|kısmen||The road is ---- closed for repairs.|part
+politically|politik olarak||The issue is ---- sensitive.
+poorly|kötü biçimde||The building was ---- designed.
+lately|son zamanlarda||Have you seen any good films ----?|time
+seldom|nadiren||He ---- speaks about his childhood.|freq
+accordingly|buna göre||The rules have changed, and we must act ----.
+largely|büyük ölçüde||The success of the project was ---- due to her hard work.|part
+thereby|böylece||He signed the contract, ---- accepting all its conditions.
+`;
+const D_V2 = `
+affect|etkilemek||Smoking can ---- the health of people around you.
+involve|içermek, gerektirmek||The job will ---- a lot of travelling.
+occur|meydana gelmek||Most accidents ---- in the home.|happen
+relate|ilişkilendirmek||It is difficult to ---- the two events to each other.|assoc
+discover|keşfetmek||Scientists hope to ---- new species in the deep ocean.|find
+suffer|acı çekmek, muzdarip olmak||Millions of people ---- from back pain.
+contain|içermek||Oranges ---- a lot of vitamin C.
+tend|eğiliminde olmak||Women ---- to live longer than men.
+describe|tanımlamak, betimlemek||Witnesses ---- the thief as tall and thin.
+introduce|tanıtmak, getirmek||The government plans to ---- a new tax on sugar.
+define|tanımlamak||It is hard to ---- happiness in a single sentence.
+encourage|teşvik etmek, cesaretlendirmek||Parents should ---- their children to read.|urge
+consume|tüketmek||Americans ---- huge amounts of sugar every year.
+observe|gözlemlemek||Scientists ---- the behaviour of chimpanzees in the wild.|exam
+survive|hayatta kalmak||Cockroaches can ---- without food for a month.
+represent|temsil etmek||The colours of the flag ---- peace and freedom.
+detect|tespit etmek||Dogs can ---- certain diseases by smell.|find
+recognize|tanımak||Babies ---- their mother's face very early.
+vary|değişmek, farklılık göstermek||Prices ---- from shop to shop.
+destroy|yok etmek||The fire could ---- the whole forest.|dest
+decrease|azalmak||Sales tend to ---- after the holidays.
+refer|atıfta bulunmak (to)||Doctors often ---- to high blood pressure as a silent killer.
+associate|ilişkilendirmek||Many people ---- the colour red with danger.|assoc
+attract|çekmek||Bright flowers ---- bees and butterflies.
+enable|mümkün kılmak||The internet can ---- people to work from anywhere.
+conduct|yürütmek||Scientists ---- experiments to test their theories.
+threaten|tehdit etmek||Rising sea levels ---- many coastal cities.
+argue|ileri sürmek; tartışmak||Some experts ---- that homework is not useful.|claim
+diagnose|teşhis etmek||Doctors can ---- the disease with a simple blood test.
+differ|farklı olmak||The two languages ---- in many ways.
+oppose|karşı çıkmak||Many local people ---- the new airport.
+publish|yayımlamak||The newspaper will ---- the results tomorrow.|inform
+expose|maruz bırakmak||Never ---- the film to direct sunlight.
+divide|bölmek||Teachers often ---- the class into small groups.|class
+employ|istihdam etmek; kullanmak||The new factory will ---- two hundred workers.
+replace|yerine koymak||Robots may ---- many workers in the future.
+invent|icat etmek||Engineers hope to ---- a cheaper way to store energy.|find
+examine|incelemek, muayene etmek||The doctor will ---- your eyes.|exam
+expand|genişlemek, genişletmek||The company plans to ---- into Asia.|ext
+reflect|yansıtmak||The results ---- the hard work of the whole team.
+preserve|korumak||Salt was used to ---- meat before refrigerators existed.|keep
+evolve|evrimleşmek, gelişmek||Languages ---- slowly over time.
+inspire|ilham vermek||Good teachers ---- their students.|urge
+extend|uzatmak||The museum will ---- its opening hours in summer.|ext
+manage|yönetmek; başarmak||It is hard to ---- a large team.|gov
+operate|çalışmak; ameliyat etmek||The machine can ---- 24 hours a day.
+settle|yerleşmek; çözmek||Many immigrants chose to ---- in large cities.
+earn|kazanmak||Doctors ---- more than teachers in most countries.
+respond|yanıt vermek, tepki vermek||Most patients ---- well to the new treatment.|react
+refuse|reddetmek||Some children ---- to eat vegetables.|rej
+generate|üretmek||Wind turbines ---- electricity.|emit
+surround|çevrelemek||High mountains ---- the small village.
+trigger|tetiklemek||Certain foods can ---- an allergic reaction.
+locate|yerini bulmak||Rescue teams tried to ---- the missing climbers.|find
+propose|önermek||The committee will ---- a new plan next week.
+infer|çıkarım yapmak||From his accent, we can ---- that he is from Scotland.
+favour|desteklemek, yeğlemek||Most voters ---- lower taxes.
+communicate|iletişim kurmak||Dolphins ---- using clicks and whistles.
+explore|keşfetmek||Robots are used to ---- the surface of Mars.
+adopt|benimsemek; evlat edinmek||Many schools have decided to ---- the new method.
+absorb|emmek||Plants ---- carbon dioxide from the air.
+pose|oluşturmak (tehdit vb.)||Plastic waste can ---- a serious threat to wildlife.
+combine|birleştirmek||The recipe ---- sweet and sour flavours.
+inform|bilgilendirmek||Please ---- us of any changes to your address.|inform
+monitor|izlemek, takip etmek||Nurses ---- the patient's heart rate constantly.|exam
+strengthen|güçlendirmek||Regular exercise can ---- your bones.
+collapse|çökmek||The old bridge could ---- at any moment.
+infect|enfekte etmek||The virus can ---- both humans and animals.
+disappear|yok olmak||Many languages may ---- by the end of the century.
+connect|bağlamak||A new bridge will ---- the island to the mainland.
+originate|kaynaklanmak||The disease is thought to ---- in bats.
+investigate|araştırmak||Police are still trying to ---- the cause of the fire.|exam
+transform|dönüştürmek||Technology can ---- the way we learn.|conv
+conclude|sonuca varmak||The researchers ---- that more studies are needed.
+implement|uygulamak||The government will ---- the new policy next year.
+convince|ikna etmek||It was hard to ---- him to see a doctor.|pers
+dominate|hakim olmak||A few large companies ---- the market.
+engage|katılmak, meşgul olmak||Students who ---- in sports are often healthier.|part
+construct|inşa etmek||The city plans to ---- a new metro line.
+concentrate|yoğunlaşmak||It is hard to ---- when you are tired.
+resist|direnmek||It is difficult to ---- the smell of fresh bread.|bear
+repair|onarmak||It will take months to ---- the damaged roads.|keep
+capture|yakalamak||The camera can ---- images in complete darkness.
+attribute|atfetmek (to)||Scientists ---- the rise in temperatures to human activity.
+integrate|bütünleştirmek||Schools should ---- technology into lessons.
+compete|rekabet etmek||Small shops cannot ---- with large supermarkets.
+confirm|doğrulamak||Further tests are needed to ---- the diagnosis.
+invade|istila etmek||The army planned to ---- the island.|occ
+announce|duyurmak||The company will ---- its results on Monday.|inform
+collect|toplamak||Bees ---- nectar from flowers.|coll
+recover|iyileşmek||Most patients ---- completely within two weeks.
+attend|katılmak||All students must ---- the lecture.|part
+suspect|şüphelenmek||Doctors ---- that the illness is caused by a virus.
+manufacture|üretmek||The factory will ---- electric cars.|emit
+commit|işlemek (suç); adamak||Young people who ---- crimes need special help.
+invest|yatırım yapmak||The company plans to ---- millions in new technology.
+approve|onaylamak||Parliament must ---- the new law.
+admire|hayran olmak||Many people ---- her courage.
+confine|sınırlamak||Please ---- your comments to the topic.
+decay|çürümek||Without proper care, teeth begin to ----.
+weaken|zayıflatmak||Lack of sleep can ---- your immune system.
+stretch|uzanmak; esnetmek||The forest seems to ---- endlessly in every direction.
+interact|etkileşim kurmak||Children learn how to ---- with others through play.
+conquer|fethetmek||The army failed to ---- the city.|occ
+classify|sınıflandırmak||Scientists ---- animals according to their features.|class
+specialize|uzmanlaşmak||Many doctors choose to ---- in one area of medicine.
+encounter|karşılaşmak||Travellers may ---- many difficulties in remote areas.
+attach|iliştirmek, bağlamak||Please ---- a photo to your application.
+educate|eğitmek||Schools should ---- children about healthy eating.
+deliver|teslim etmek||The company promises to ---- all orders within a day.
+advise|tavsiye etmek||Doctors ---- patients to drink plenty of water.|urge
+succeed|başarılı olmak||Only hard work will help you ---- in life.
+reject|reddetmek||The committee may ---- the proposal.|rej
+reproduce|üremek||Some plants ---- without seeds.
+activate|harekete geçirmek||Sunlight helps the skin ---- vitamin D.
+interpret|yorumlamak||It can be difficult to ---- the results of the test.
+confuse|kafasını karıştırmak||Too many choices can ---- customers.
+prescribe|reçete etmek||Doctors should not ---- antibiotics for viral infections.
+pursue|peşinden gitmek||She decided to ---- a career in medicine.
+formulate|formüle etmek||Scientists ---- theories to explain their observations.
+induce|neden olmak, tetiklemek||Some drugs can ---- sleep.
+participate|katılmak||All children are encouraged to ---- in school sports.|part
+defend|savunmak||Soldiers must ---- their country.
+calculate|hesaplamak||It is difficult to ---- the exact cost of the project.
+warn|uyarmak||Scientists ---- that the ice is melting faster than expected.|urge
+restore|eski haline getirmek||Experts are working to ---- the old painting.|keep
+initiate|başlatmak||The government will ---- a new health campaign.
+satisfy|tatmin etmek||The product failed to ---- customers.
+disturb|rahatsız etmek||Please do not ---- the animals.
+characterize|nitelendirmek||Hot summers and mild winters ---- the region's climate.
+declare|ilan etmek||The government may ---- a state of emergency.|inform
+convert|dönüştürmek||Solar panels ---- sunlight into electricity.|conv
+swallow|yutmak||Some snakes ---- their prey whole.
+analyze|analiz etmek||Computers can ---- huge amounts of data.|exam
+interfere|müdahale etmek, engel olmak||Noise can ---- with sleep.
+assert|ileri sürmek||The scientists ---- that their method is completely safe.|claim
+devote|adamak||She decided to ---- her life to helping the poor.|ded
+disrupt|aksatmak||The strike will ---- train services.
+intend|niyet etmek||The government does not ---- to raise taxes.
+react|tepki vermek||People ---- differently to stress.|react
+flourish|gelişmek, serpilmek||Trade began to ---- after the new road was built.
+compensate|telafi etmek (for)||Nothing can ---- for the loss of a child.
+inherit|miras almak||Children ---- their eye colour from their parents.
+accumulate|birikmek, biriktirmek||Dust can quickly ---- under furniture.|coll
+manipulate|manipüle etmek||Advertisements try to ---- our emotions.
+adjust|ayarlamak, uyum sağlamak||It takes time to ---- to a new job.
+isolate|izole etmek||Doctors had to ---- the infected patients.
+afford|parasını karşılayabilmek||Many young people cannot ---- to buy a house.
+exhaust|tüketmek||Overfishing may ---- fish stocks.
+abandon|terk etmek||Many farmers had to ---- their land because of the drought.
+gather|toplamak, toplanmak||Crowds began to ---- in the square.|coll
+surpass|aşmak, geçmek||Sales are expected to ---- last year's record.|exc
+motivate|motive etmek||Good teachers ---- their students.|urge
+impair|bozmak, zayıflatmak||Alcohol can ---- your ability to drive.
+persuade|ikna etmek||It is hard to ---- people to change their habits.|pers
+behave|davranmak||Children often ---- badly when they are tired.
+occupy|işgal etmek; kaplamak||The army continued to ---- the city for three years.|occ
+criticize|eleştirmek||Many experts ---- the new education policy.
+contaminate|kirletmek, bulaştırmak||Chemicals from the factory could ---- the river.|poll
+emit|salmak, yaymak||Cars ---- large amounts of carbon dioxide.|emit
+hide|saklamak||Some animals ---- food for the winter.
+relieve|hafifletmek||This medicine will ---- the pain.
+undertake|üstlenmek||The company will ---- a major study of the problem.
+deprive|mahrum bırakmak||Long working hours ---- people of sleep.
+consult|danışmak||You should ---- a doctor before taking these pills.
+prolong|uzatmak||Regular exercise may ---- your life.|ext
+extract|çıkarmak||Oil companies ---- oil from under the sea.
+cease|durmak, sona ermek||The factory will ---- production next month.
+reverse|tersine çevirmek||It may be impossible to ---- the damage.
+migrate|göç etmek||Many birds ---- south in winter.
+prevail|hüküm sürmek, galip gelmek||In the end, common sense will ----.
+celebrate|kutlamak||People ---- the new year with fireworks.
+inject|enjekte etmek||The nurse will ---- the vaccine into your arm.
+devastate|harap etmek||A single storm can ---- an entire harvest.|dest
+devise|tasarlamak||Engineers must ---- a new way to cool the reactor.|find
+recall|hatırlamak||I cannot ---- where I left my keys.
+insist|ısrar etmek||Doctors ---- on complete rest after the operation.
+resolve|çözmek||The two countries hope to ---- their differences peacefully.
+exceed|aşmak||The cost must not ---- one million dollars.|exc
+dedicate|adamak||He decided to ---- his life to music.|ded
+accomplish|başarmak||We can ---- a lot if we work together.
+exploit|sömürmek; yararlanmak||Some companies ---- cheap labour in poor countries.
+urge|ısrarla istemek||Doctors ---- people to get vaccinated.|urge
+entertain|eğlendirmek||The clown was hired to ---- the children.
+administer|uygulamak (ilaç vb.)||Only a nurse can ---- this drug.|gov
+deny|inkar etmek||The minister continued to ---- the accusations.|rej
+tolerate|tahammül etmek||Some plants cannot ---- cold weather.|bear
+coordinate|koordine etmek||The manager will ---- the work of the two teams.|gov
+possess|sahip olmak||Few people ---- such a rare talent.
+enrich|zenginleştirmek||Reading can ---- your vocabulary.
+qualify|hak kazanmak||You must pass the exam to ---- as a doctor.
+govern|yönetmek||The country is difficult to ----.|gov
+endure|dayanmak||The prisoners had to ---- terrible conditions.|bear
+illustrate|örneklemek, göstermek||These examples ---- the importance of early diagnosis.
+freeze|donmak||Water begins to ---- at zero degrees.
+equip|donatmak||The school plans to ---- every classroom with computers.
+cultivate|yetiştirmek (bitki)||Farmers in the region ---- rice and tea.
+resemble|benzemek||Children often ---- their parents.
+incorporate|dahil etmek||The new design will ---- solar panels.
+erupt|patlamak (volkan)||Scientists fear that the volcano could ---- soon.
+appoint|atamak||The board will ---- a new director next month.
+pollute|kirletmek||Factories should not be allowed to ---- rivers.|poll
+assist|yardım etmek||Nurses ---- doctors during operations.
+distribute|dağıtmak||Volunteers will ---- food to the flood victims.
+permit|izin vermek||The law does not ---- smoking in public buildings.
+praise|övmek||Critics ---- the film for its beautiful music.
+proceed|devam etmek, ilerlemek||Passengers should ---- to gate 12.
+weigh|ağırlığında olmak||Adult elephants can ---- more than six tonnes.
+utilize|kullanmak||Farmers must ---- water more efficiently.
+guarantee|garanti etmek||Money cannot ---- happiness.
+conserve|korumak, tasarruf etmek||We must ---- water during the dry season.|keep
+provoke|kışkırtmak, neden olmak||The new law is likely to ---- protests.
+harvest|hasat etmek||Farmers ---- the grapes in September.|coll
+differentiate|ayırt etmek||Children learn to ---- between colours at an early age.
+enforce|uygulamak (yasa)||The police must ---- the new traffic laws.
+suppress|bastırmak||Some drugs ---- the appetite.
+abolish|kaldırmak (yasa vb.)||Many countries have decided to ---- the death penalty.
+persist|sürmek, devam etmek||If the symptoms ----, you should see a doctor.
+digest|sindirmek||Some people cannot ---- milk properly.
+foresee|öngörmek||Nobody could ---- the economic crisis.
+`;
+
+/* ================= VERİ ================= */
+const UNITS = [
+ {k:"n",pos:"n",stage:1,name:"İsimler",em:"📦",tag:"İSİM",raw:D_N,tip:"YDS'de 1. soru neredeyse her zaman isimdir. Boşluğun önündeki 'the, a, of' gibi kelimelere ve sonrasındaki edata dikkat et."},
+ {k:"a",pos:"a",stage:1,name:"Sıfatlar",em:"🎨",tag:"SIFAT",raw:D_A,tip:"2. soru genellikle sıfattır. Cümlenin olumlu mu olumsuz mu olduğunu yakala; çeldiriciler çoğu zaman ters anlamlıdır."},
+ {k:"r",pos:"r",stage:1,name:"Zarflar",em:"⚡",tag:"ZARF",raw:D_R,tip:"3. soru hemen her sınavda -ly ile biten bir zarftır. Zarfın hangi fiili veya sıfatı nitelediğine bak: 'vary ----', '---- rooted' gibi."},
+ {k:"v",pos:"v",stage:1,name:"Fiiller",em:"🔧",tag:"FİİL",raw:D_V,tip:"4. soru genellikle fiildir. Fiilin nesnesiyle uyumuna bak: 'foster cooperation', 'convey emotions' gibi kalıplar puan kazandırır."},
+ {k:"p",pos:"p",stage:1,name:"Phrasal Verbs",em:"🧩",tag:"PHRASAL VERB",raw:D_P,tip:"5. ve 6. sorular phrasal verb'dür. ÖSYM aynı phrasal verb'leri bazen doğru cevap, bazen çeldirici yapar; hepsinin anlamını bil."},
+ {k:"c",pos:"c",stage:1,name:"Bağlaç ve Edatlar",em:"🔗",tag:"BAĞLAÇ",raw:D_C,tip:"Bağlaç soruları (12–16) ve cloze testlerin yarısı bunlarla ilgilidir. Önce iki cümle arasındaki ilişkiyi bul: zıtlık mı, neden mi, şart mı, amaç mı? Sonra boşluktan sonra cümle mi (although) isim mi (despite) geldiğine bak."}
+];
+const half=(raw,part)=>{ const L=raw.trim().split("\n"); const h=Math.ceil(L.length*0.55); return (part===1?L.slice(0,h):L.slice(h)).join("\n"); };
+const TIP2={n:"Bu isimler sınav metinlerinde en sık geçenler. Okuma parçalarında ve cloze testlerinde anlamı bilmek hız kazandırır.",a:"Sıfatlarda olumlu/olumsuz ayrımına ve hangi isimle kullanıldığına dikkat et: 'harsh conditions', 'fertile soil' gibi.",r:"Zarflar cümlenin tonunu değiştirir. 'hardly, rarely, seldom' olumsuz anlam taşır; paragraf sorularında kritik.",v:"Fiillerin hangi edatla kullanıldığını da öğren: 'refer to', 'attribute to', 'compensate for', 'interfere with'."};
+UNITS.push(
+ {k:"n2",pos:"n",stage:2,name:"İsimler",em:"📦",tag:"İSİM",raw:half(D_N2,1),tip:TIP2.n},
+ {k:"a2",pos:"a",stage:2,name:"Sıfatlar",em:"🎨",tag:"SIFAT",raw:half(D_A2,1),tip:TIP2.a},
+ {k:"r2",pos:"r",stage:2,name:"Zarflar",em:"⚡",tag:"ZARF",raw:half(D_R2,1),tip:TIP2.r},
+ {k:"v2",pos:"v",stage:2,name:"Fiiller",em:"🔧",tag:"FİİL",raw:half(D_V2,1),tip:TIP2.v},
+ {k:"n3",pos:"n",stage:3,name:"İsimler",em:"📦",tag:"İSİM",raw:half(D_N2,2),tip:TIP2.n},
+ {k:"a3",pos:"a",stage:3,name:"Sıfatlar",em:"🎨",tag:"SIFAT",raw:half(D_A2,2),tip:TIP2.a},
+ {k:"r3",pos:"r",stage:3,name:"Zarflar",em:"⚡",tag:"ZARF",raw:half(D_R2,2),tip:TIP2.r},
+ {k:"v3",pos:"v",stage:3,name:"Fiiller",em:"🔧",tag:"FİİL",raw:half(D_V2,2),tip:TIP2.v},
+ {k:"t",pos:"n",stage:3,name:"Konu Kelimeleri (bilim, sağlık, tarih)",em:"🔬",tag:"KONU KELİMESİ",raw:D_T,tip:"Okuma parçaları çoğunlukla sağlık, biyoloji, çevre ve tarih konularında. Bu terimleri bilmek paragrafı hızlı anlamanı sağlar."}
+);
+const STAGES={1:"1. Aşama · Çekirdek (ÖSYM'nin doğrudan sorduğu)",2:"2. Aşama · Sık kullanılan akademik kelimeler",3:"3. Aşama · İleri seviye ve konu kelimeleri"};
+const ALL = [];
+UNITS.forEach(u=>{
+  u.words = u.raw.trim().split("\n").map(line=>{
+    let star=false; if(line.startsWith("*")){star=true; line=line.slice(1);}
+    const f=line.split("|");
+    const o = u.k==="c" ? {w:f[0],m:f[1],syn:"",grp:f[2],s:f[3]} : {w:f[0],m:f[1],syn:f[2]||"",s:f[3],grp:f[4]||""};
+    o.star=star; o.k=u.k; o.id=u.k+":"+o.w; return o;
+  });
+  ALL.push(...u.words);
+});
+const STAR = {k:"s",pos:"x",stage:0,name:"★ ÖSYM'de Tekrar Çıkanlar",em:"⭐",tag:"TEKRAR ÇIKAN",tip:"Bu kelimeler 2013–2020 sınavlarında birden fazla kez doğru cevap ya da şık oldu. Sınavdan önce mutlaka tekrar et.",words:ALL.filter(x=>x.star)};
+const UNIT_LIST=[STAR,...UNITS];
+const unitByK = k => UNIT_LIST.find(u=>u.k===k);
+const META = k => UNITS.find(u=>u.k===k);
+const PART=15;
+function parts(u){ const p=[]; for(let i=0;i<u.words.length;i+=PART) p.push(u.words.slice(i,i+PART)); if(p.length>1&&p[p.length-1].length<6){const l=p.pop();p[p.length-1].push(...l);} return p; }
+
+/* ================= DEPOLAMA + ARALIKLI TEKRAR ================= */
+const KEY="yds-akademi-v1";
+const INT=[0,1,3,7,14,30];
+let st={xp:0,srs:{},steps:{},today:"",todayXp:0,days:0,lastDay:"",best:{},mist:{},goal:200,fixed:0,hist:[],tm:"1",log:{},ts:{}};
+try{const r=localStorage.getItem(KEY); if(r) st=Object.assign(st,JSON.parse(r));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}};
+const dstr=d=>{const x=new Date(d); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");};
+const today=()=>dstr(Date.now());
+const addDays=n=>dstr(Date.now()+n*864e5);
+const box=id=>st.srs[id]?.b ?? -1;
+const seen=id=>!!st.srs[id];
+const learned=id=>box(id)>=3;
+const isDue=id=>seen(id) && st.srs[id].due<=today();
+function grade(x,ok,soft){
+  if(!st.srs[x.id]) L().nw++;
+  const s=st.srs[x.id]||{b:0,due:today(),w:0};
+  if(ok){ s.b=Math.min(5,(s.b<0?0:s.b)+1); if(st.mist[x.id]){ st.mist[x.id]--; if(st.mist[x.id]<=0){ delete st.mist[x.id]; st.fixed=(st.fixed||0)+1; } } }
+  else if(soft){ s.b=Math.max(1,Math.min(s.b,2)); }
+  else { s.b=0; s.w=(s.w||0)+1; st.mist[x.id]=Math.min(4,(st.mist[x.id]||0)+2); }
+  s.due=addDays(ok||soft?INT[s.b]:0);
+  st.srs[x.id]=s; save();
+}
+function L(){ st.log=st.log||{}; const d=today(); if(!st.log[d]) st.log[d]={q:0,ok:0,xp:0,nw:0,sec:0,ln:0}; return st.log[d]; }
+function snapLearned(){ L().ln=ALL.filter(x=>learned(x.id)).length; }
+function checkDay(){ if(st.today!==today()){st.today=today(); st.todayXp=0; save();} }
+function addXp(n){
+  checkDay(); st.xp+=n; st.todayXp+=n; L().xp+=n;
+  if(st.lastDay!==today()){ st.days = st.lastDay===addDays(-1) ? st.days+1 : 1; st.lastDay=today(); }
+  save(); updateBar(); const el=$("xp").parentElement; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+}
+
+/* ================= YARDIMCILAR ================= */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function speak(t){try{if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="en-US"; u.rate=.85; speechSynthesis.speak(u);}catch(e){}}
+const SECTIONS=["backup","stats","weak","examMenu","home","unitView","partView","cards","match","quiz","done","listView","clozeList","guide"];
+let timers=[];
+function show(id){ timers.forEach(clearInterval); timers=[]; SECTIONS.forEach(s=>$(s).classList.toggle("hidden",s!==id)); window.scrollTo(0,0); }
+const fullSentence=x=>esc(x.s).replace("----",`<b>${esc(x.w)}</b>`);
+const blankSentence=x=>esc(x.s).replace("----",'<span class="blank">&nbsp;</span>');
+function conflict(x,y){
+  if(x.w===y.w) return true;
+  if(x.k==="c"||y.k==="c") return x.grp===y.grp;
+  if(x.grp && x.grp===y.grp) return true;
+  if(x.syn && (x.syn===y.syn || x.syn===y.w)) return true;
+  if(y.syn && y.syn===x.w) return true;
+  return false;
+}
+function pickOthers(x,n,filter,keyFn){
+  const pool=shuffle(ALL.filter(y=>y.k===x.k && !conflict(x,y) && (!filter||filter(y))));
+  const kf=keyFn||(y=>y.w), used=new Set([kf(x)]), out=[];
+  for(const y of pool){ const k=kf(y); if(used.has(k)) continue; used.add(k); out.push(y); if(out.length===n) break; }
+  return out;
+}
+function updateBar(){
+  checkDay(); $("xp").textContent=st.xp;
+  $("days").textContent=(st.lastDay===today()||st.lastDay===addDays(-1))?st.days:0;
+  const g=Math.min(st.goal,st.todayXp);
+  $("goalText").textContent= st.todayXp>=st.goal?"Hedef tamam! 🎉":`${g} / ${st.goal} puan`;
+  $("goalFill").style.width=(g/st.goal*100)+"%";
+}
+
+/* ================= ANA EKRAN ================= */
+function renderHome(){
+  updateBar();
+  const due=ALL.filter(x=>isDue(x.id)).length, ls=ALL.filter(x=>learned(x.id)).length, sn=ALL.filter(x=>seen(x.id)).length;
+  $("homeLead").textContent=`${ALL.length} kelime ve kalıp · 2013–2020 YDS ve YÖKDİL analizinden · tüm cümleler özgün.`;
+  $("kLearned").textContent=ls; $("kSeen").textContent=sn; $("kDue").textContent=due;
+  $("reviewSub").textContent= due?`${due} kelime seni bekliyor`: (sn?"Bugünlük tekrar bitti ✓":"Önce yeni kelime öğren");
+  const mc=Object.keys(st.mist).length; $("mistakeSub").textContent= mc?`${mc} kelime tekrar bekliyor`:"Henüz yanlış yok";
+  $("timeMode").value=st.tm||"1";
+  { const lg=(st.log||{})[today()]; $("statsSub").textContent= lg&&lg.q? `Bugün: ${lg.q} soru · %${Math.round(lg.ok/lg.q*100)} doğru · ${lg.nw} yeni kelime` : "Günlük çalışma, doğruluk, öğrenilen kelime grafikleri"; }
+  const L=$("unitList"); L.innerHTML="";
+  let lastStage=-1;
+  UNIT_LIST.forEach(u=>{
+    if(u.stage!==lastStage && u.stage>0){ lastStage=u.stage; const h=document.createElement("h2"); const n=UNITS.filter(x=>x.stage===u.stage).reduce((s,x)=>s+x.words.length,0); const l=UNITS.filter(x=>x.stage===u.stage).reduce((s,x)=>s+x.words.filter(w=>learned(w.id)).length,0); h.textContent=`${STAGES[u.stage]} — ${n} kelime · öğrenilen ${l}`; h.style.fontSize="1rem"; L.appendChild(h); }
+    else if(u.stage===0) lastStage=0;
+    const l=u.words.filter(x=>learned(x.id)).length, p=Math.round(l/u.words.length*100);
+    const b=document.createElement("button"); b.className="unit";
+    b.innerHTML=`<div class="em">${u.em}</div><div class="info"><strong>${u.name}</strong><span>${u.words.length} kelime · ${parts(u).length} bölüm</span><div class="mini"><i style="width:${p}%"></i></div></div><div class="pct">%${p}</div>`;
+    b.onclick=()=>openUnit(u.k); L.appendChild(b);
+  });
+  show("home");
+}
+$("brandBtn").onclick=renderHome;
+$("btnGuide").onclick=()=>show("guide"); $("gBack").onclick=renderHome;
+$("btnReset").onclick=()=>{ if(confirm("Tüm ilerleme silinecek. Emin misin?")){ st={xp:0,srs:{},steps:{},today:"",todayXp:0,days:0,lastDay:"",best:{},mist:{},goal:200}; save(); renderHome(); } };
+
+/* ================= ÜNİTE / BÖLÜM ================= */
+let curUnit=null, curPart=null, curPartIdx=0;
+function openUnit(k){
+  curUnit=unitByK(k);
+  $("uvTitle").textContent=curUnit.em+" "+curUnit.name+(curUnit.stage?` (${curUnit.stage}. Aşama)`:"");
+  $("uvLead").textContent=`${curUnit.words.length} kelime, ${PART}'erli bölümlere ayrıldı. Bölümleri sırayla bitir.`;
+  $("uvTip").textContent="💡 "+curUnit.tip;
+  const L=$("partList"); L.innerHTML="";
+  parts(curUnit).forEach((p,i)=>{
+    const l=p.filter(x=>learned(x.id)).length, pc=Math.round(l/p.length*100);
+    const b=document.createElement("button"); b.className="unit";
+    b.innerHTML=`<div class="em">${i+1}</div><div class="info"><strong>Bölüm ${i+1}</strong><span>${esc(p.slice(0,3).map(x=>x.w).join(", "))}…</span><div class="mini"><i style="width:${pc}%"></i></div></div><div class="pct">%${pc}</div>`;
+    b.onclick=()=>openPart(i); L.appendChild(b);
+  });
+  show("unitView");
+}
+$("uvBack").onclick=renderHome;
+const ACTS=[
+ ["cards","Kartlarla öğren","Önce hatırla, sonra kartı çevir ve kendini puanla"],
+ ["match","Eşleştirme oyunu","İngilizceyi Türkçesiyle eşle, süreni yen"],
+ ["meaning","Anlam testi","İngilizce→Türkçe ve Türkçe→İngilizce"],
+ ["fill","YDS boşluk doldurma","Gerçek sınavdaki gibi 5 şıklı cümle soruları"],
+ ["syn","Eş anlamlı bulma","Kelimeye anlamca en yakın olanı seç"],
+ ["listen","Dinle ve bul","Duyduğun kelimenin anlamını seç"],
+ ["write","Yazarak hatırla","Türkçesini ve cümlesini gör, kelimeyi yaz"],
+ ["mix","Karışık final testi","Tüm soru tipleri karışık, bölümü bitir"]
+];
+function openPart(i){
+  curPartIdx=i; curPart=parts(curUnit)[i];
+  $("pvTitle").textContent=`${curUnit.em} ${curUnit.name}${curUnit.stage?" ("+curUnit.stage+". Aşama)":""} · Bölüm ${i+1}`;
+  const l=curPart.filter(x=>learned(x.id)).length;
+  $("pvLead").textContent=`${curPart.length} kelime · öğrenilen ${l}. Adımları sırayla yapmak en etkili yoldur.`;
+  const L=$("stepList"); L.innerHTML="";
+  ACTS.forEach(([k,t,d],j)=>{
+    if(k==="syn" && curPart.every(x=>!x.syn)) return;
+    const done=st.steps[curUnit.k+i+":"+k];
+    const b=document.createElement("button"); b.className="step"+(done?" done":"");
+    b.innerHTML=`<div class="n">${done?"✓":j+1}</div><div><strong>${t}</strong><span>${d}</span></div>`;
+    b.onclick=()=>runAct(k); L.appendChild(b);
+  });
+  show("partView");
+}
+$("pvBack").onclick=()=>openUnit(curUnit.k);
+function runAct(k){
+  const key=curUnit.k+curPartIdx+":"+k, back=()=>openPart(curPartIdx);
+  const mark=()=>{st.steps[key]=true; save();};
+  if(k==="cards") return startCards(curPart,()=>{mark(); doneScreen("Kartlar bitti","✓","Şimdi eşleştirme oyunuyla pekiştir.",[], "Eşleştirmeye geç",()=>runAct("match"),()=>runAct("cards"));});
+  if(k==="match") return startMatch(curPart,(sec,mis)=>{mark(); doneScreen("Eşleştirme bitti",sec+" sn",`${mis} hata yaptın.`,[],"Sonraki adım",()=>runAct("meaning"),()=>runAct("match"));});
+  const types={meaning:["meaning","reverse"],fill:["fill"],syn:["syn"],listen:["listen"],write:["write"],mix:["fill","meaning","reverse","syn","listen","write"]}[k];
+  const words=k==="write"||k==="listen"?shuffle(curPart).slice(0,10):shuffle(curPart);
+  startSession({title:ACTS.find(a=>a[0]===k)[1], items:words.map(x=>({x,t:pickType(x,types)})), onEnd:(ok,tot,items)=>{mark(); doneScreen(ACTS.find(a=>a[0]===k)[1],`${ok}/${tot}`,ok===tot?"Mükemmel!":"Yanlışların Hata Defteri'ne eklendi ve günlük tekrarda karşına çıkacak.",items,"Bölüm menüsü",back,()=>runAct(k));}});
+}
+function pickType(x,types){ let t=types.filter(t=>!(t==="syn"&&!x.syn)); if(!t.length) t=["fill"]; return t[Math.floor(Math.random()*t.length)]; }
+$("pvList").onclick=()=>showList(`${curUnit.name} · Bölüm ${curPartIdx+1}`,curPart,()=>openPart(curPartIdx));
+
+/* ================= KARTLAR ================= */
+let cList=[],ci=0,cDone=null;
+function startCards(list,onDone){ cList=list; ci=0; cDone=onDone; renderCard(); show("cards"); }
+function renderCard(){
+  const x=cList[ci];
+  $("cCount").textContent=`${ci+1} / ${cList.length}`;
+  $("cTag").textContent=META(x.k).tag+(x.star?" · ★ TEKRAR ÇIKAN":"");
+  $("cEn").textContent=x.w;
+  $("cTr").textContent=x.m;
+  $("cSyn").textContent=x.syn?"≈ "+x.syn:"";
+  $("cEx").innerHTML=fullSentence(x);
+  $("cBack").classList.add("hidden"); $("cFrontHint").classList.remove("hidden");
+  $("cFlip").classList.remove("hidden"); $("cRate").classList.add("hidden");
+  speak(x.w);
+}
+$("cFlip").onclick=()=>{ $("cBack").classList.remove("hidden"); $("cFrontHint").classList.add("hidden"); $("cFlip").classList.add("hidden"); $("cRate").classList.remove("hidden"); };
+$("cSpeak").onclick=()=>speak(cList[ci].w);
+document.querySelectorAll("#cRate button").forEach(b=>b.onclick=()=>{
+  const r=+b.dataset.r, x=cList[ci];
+  if(r===2) grade(x,true); else if(r===1) grade(x,false,true); else grade(x,false);
+  addXp(2);
+  if(ci<cList.length-1){ci++; renderCard();} else cDone();
+});
+$("cQuit").onclick=()=>cDone?cDone():renderHome();
+
+/* ================= EŞLEŞTİRME ================= */
+let mBoards=[],mb=0,mSel=null,mLeft=0,mStart=0,mMist=0,mDone=null;
+function startMatch(list,onDone){
+  mDone=onDone; const ws=shuffle(list); mBoards=[];
+  for(let i=0;i<ws.length;i+=5) mBoards.push(ws.slice(i,i+5));
+  if(mBoards.length>1&&mBoards[mBoards.length-1].length<3){const l=mBoards.pop(); mBoards[mBoards.length-1].push(...l);}
+  mb=0; mMist=0; show("match"); mStart=Date.now();
+  timers.push(setInterval(()=>$("mTime").textContent="⏱ "+Math.floor((Date.now()-mStart)/1000)+" sn",500));
+  renderBoard();
+}
+function renderBoard(){
+  const b=mBoards[mb]; mSel=null; mLeft=b.length;
+  $("mRound").textContent=`Tur ${mb+1} / ${mBoards.length}`;
+  $("mLeft").innerHTML=""; $("mRight").innerHTML="";
+  shuffle(b).forEach(x=>$("mLeft").appendChild(tile(x.w,x,"L")));
+  shuffle(b).forEach(x=>$("mRight").appendChild(tile(x.m,x,"R")));
+}
+function tile(text,x,side){
+  const t=document.createElement("button"); t.className="tile"; t.textContent=text; t.dataset.id=x.id; t.dataset.side=side;
+  t.onclick=()=>{
+    if(side==="L") speak(x.w);
+    if(!mSel||mSel.dataset.side===side){ if(mSel) mSel.classList.remove("sel"); mSel=t; t.classList.add("sel"); return; }
+    if(mSel.dataset.id===t.dataset.id){
+      mSel.classList.remove("sel"); mSel.classList.add("ok"); t.classList.add("ok"); addXp(2); mSel=null; mLeft--;
+      if(mLeft===0) setTimeout(()=>{ mb++; if(mb<mBoards.length) renderBoard(); else { timers.forEach(clearInterval); addXp(10); mDone(Math.floor((Date.now()-mStart)/1000),mMist);} },450);
+    } else {
+      mMist++; const a=mSel; a.classList.remove("sel");
+      [a,t].forEach(e=>{e.classList.remove("no"); void e.offsetWidth; e.classList.add("no");});
+      setTimeout(()=>{a.classList.remove("no"); t.classList.remove("no");},400);
+      const w=ALL.find(y=>y.id===a.dataset.id); if(w){ st.mist[w.id]=(st.mist[w.id]||0)+1; save(); }
+      mSel=null;
+    }
+  };
+  return t;
+}
+$("mQuit").onclick=()=>{ timers.forEach(clearInterval); mDone?mDone(Math.floor((Date.now()-mStart)/1000),mMist):renderHome(); };
+
+/* ================= SORU MOTORU ================= */
+let S=null;
+const PERQ={fill:40,meaning:25,reverse:30,syn:35,listen:30,write:60,cloze:70};
+const mult=()=>parseFloat(st.tm||"1");
+function startSession(cfg){
+  S=Object.assign({i:0,ok:0,res:[],timed:false,clozeState:{},requeue:false,rq:{}},cfg);
+  show("quiz");
+  $("qTimer").textContent=""; $("qTimer").classList.remove("low");
+  S.start=Date.now();
+  const m=mult();
+  if(S.noTimer || m===0){
+    if(S.timed){ const tk=()=>{const s=Math.floor((Date.now()-S.start)/1000); $("qTimer").textContent=`⏱ ${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;}; tk(); timers.push(setInterval(tk,1000)); }
+  } else {
+    S.limit = Math.round((S.limitBase || S.items.reduce((t,it)=>t+(PERQ[it.t]||40),0))*m);
+    const tk=()=>{ const left=S.limit-Math.floor((Date.now()-S.start)/1000);
+      if(left<=0){ $("qTimer").textContent="⏱ 0:00"; timeUp(); return; }
+      $("qTimer").textContent=`⏱ ${Math.floor(left/60)}:${String(left%60).padStart(2,"0")} kaldı`;
+      $("qTimer").classList.toggle("low", left<=60); };
+    tk(); timers.push(setInterval(tk,1000));
+  }
+  ask();
+}
+function timeUp(){
+  if(!S || S.ended) return;
+  timers.forEach(clearInterval);
+  const answered=S.res.length;
+  S.items.slice(answered).forEach(it=>{
+    if(it.t==="cloze"){ const g=CLOZE[it.p][2][it.g]; S.res.push({w:g[0],m:"(süre doldu, cevaplanmadı)",ok:false}); }
+    else { S.res.push({w:it.x.w,m:"(süre doldu, cevaplanmadı)",ok:false}); }
+  });
+  S.timeUp=true; endSession();
+}
+const LABELS={
+ fill:x=>x.k==="c"?"Boşluğa en uygun bağlacı / ifadeyi seçin":"Cümlede boş bırakılan yere uygun düşen sözcüğü bulun",
+ meaning:()=>"Bu kelimenin Türkçe anlamı hangisidir?",
+ reverse:()=>"Bu anlamı veren İngilizce kelime hangisidir?",
+ syn:()=>"Aşağıdakilerden hangisi anlamca en yakındır?",
+ listen:()=>"Dinle: duyduğun kelimenin anlamı hangisi?",
+ write:()=>"Kelimeyi yaz",
+ cloze:()=>"Parçada numaralanmış yere uygun düşen ifadeyi bulun"
+};
+function ask(){
+  const it=S.items[S.i], x=it.x, t=it.t;
+  $("qCount").textContent=`${S.title} · ${S.i+1}/${S.items.length}`;
+  $("qFill").style.width=(S.i/S.items.length*100)+"%";
+  $("qFb").classList.add("hidden"); $("qNext").classList.add("hidden");
+  $("qPassage").innerHTML=""; $("qOpts").innerHTML=""; $("qLabel").textContent=LABELS[t](x||{});
+  let prompt="", opts=null, correct=null;
+  if(t==="cloze"){
+    const P=CLOZE[it.p], g=P[2][it.g];
+    $("qPassage").innerHTML=`<div class="passage">${renderPassage(it.p,it.g,S.clozeState)}</div>`;
+    prompt=`<p class="qtext" style="font-size:1.05rem">Boşluk (${it.g+1})</p>`;
+    correct=g[0]; opts=shuffle(g);
+  } else if(t==="fill"){
+    prompt=`<p class="qtext">${blankSentence(x)}</p>`;
+    correct=x.w; const ds = x.k==="c" ? pickOthers(x,4) : pickOthers(x,4);
+    opts=shuffle([x.w,...ds.map(y=>y.w)]);
+  } else if(t==="meaning"){
+    prompt=`<p class="qtext big">${esc(x.w)}</p>`;
+    correct=x.m; opts=shuffle([x.m,...pickOthers(x,4,null,y=>y.m).map(y=>y.m)]);
+  } else if(t==="reverse"){
+    prompt=`<p class="qtext big" style="font-size:1.6rem">${esc(x.m)}</p>`;
+    correct=x.w; opts=shuffle([x.w,...pickOthers(x,4).map(y=>y.w)]);
+  } else if(t==="syn"){
+    prompt=`<p class="qtext big">${esc(x.w)}</p>`;
+    correct=x.syn;
+    const pool=shuffle(ALL.filter(y=>y.k===x.k && y.syn && !conflict(x,y) && y.syn!==x.syn && y.syn!==x.w));
+    const seenS=new Set([x.syn]); const ds=[]; for(const y of pool){ if(!seenS.has(y.syn)){seenS.add(y.syn); ds.push(y.syn);} if(ds.length===4) break; }
+    opts=shuffle([x.syn,...ds]);
+  } else if(t==="listen"){
+    prompt=`<button class="bigspeak" id="qSpk" aria-label="Dinle">🔊</button>`;
+    correct=x.m; opts=shuffle([x.m,...pickOthers(x,4,null,y=>y.m).map(y=>y.m)]);
+  } else if(t==="write"){
+    const hint=x.w.split("").map((c,i)=>c===" "?"  ":(i===0?c:"_")).join(" ");
+    prompt=`<p class="qtext" style="font-size:1.15rem">${esc(x.m)}<br><span style="color:var(--muted);font-weight:500">${blankSentence(x)}</span></p><div class="hint">${esc(hint)} (${x.w.replace(/ /g,"").length} harf)</div>
+      <div class="write"><input id="wIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Kelimeyi yaz"><button id="wOk">Kontrol</button></div>`;
+  }
+  $("qPrompt").innerHTML=prompt;
+  if(t==="listen"){ $("qSpk").onclick=()=>speak(x.w); setTimeout(()=>speak(x.w),250); }
+  if(t==="write"){
+    const inp=$("wIn"); inp.focus();
+    const go=()=>{ const v=inp.value.trim().toLowerCase().replace(/\s+/g," "); if(!v) return; inp.disabled=true; $("wOk").disabled=true; finish(v===x.w.toLowerCase(), v); };
+    $("wOk").onclick=go; inp.onkeydown=e=>{ if(e.key==="Enter") go(); };
+    return;
+  }
+  opts.forEach((o,i)=>{ const b=document.createElement("button"); b.className="opt";
+    b.innerHTML=`<span class="k">${"ABCDE"[i]}</span><span>${esc(o)}</span>`;
+    b.onclick=()=>{ [...$("qOpts").children].forEach((c,j)=>{c.disabled=true; if(opts[j]===correct) c.classList.add("correct");}); if(o!==correct) b.classList.add("wrong"); finish(o===correct,o); };
+    $("qOpts").appendChild(b); });
+}
+function wordByText(o,k){ const l=o.toLowerCase(); return ALL.find(y=>y.w===l && (!k||y.k===k)) || ALL.find(y=>y.w===l) || ALL.find(y=>y.m===o); }
+function finish(ok,chosen){
+  const it=S.items[S.i], x=it.x, t=it.t;
+  { const lg=L(); lg.q++; if(ok) lg.ok++; st.ts=st.ts||{}; const ts=st.ts[t]||(st.ts[t]={q:0,ok:0}); ts.q++; if(ok) ts.ok++; }
+  if(ok){ S.ok++; addXp(S.timed?8:5); }
+  else if(S.requeue && it.x && (S.rq[it.x.id]||0)<2){ S.rq[it.x.id]=(S.rq[it.x.id]||0)+1; S.items.push({x:it.x,t:pickType(it.x,["fill","meaning","reverse","write"].filter(k=>k!==t))}); }
+  let fb="";
+  if(t==="cloze"){
+    const g=CLOZE[it.p][2][it.g]; S.clozeState[it.p+"-"+it.g]=ok?"filled":"missed";
+    $("qPassage").innerHTML=`<div class="passage">${renderPassage(it.p,-1,S.clozeState)}</div>`;
+    const w=wordByText(g[0]); if(w) grade(w,ok);
+    fb=`<b>${esc(g[0])}</b>${w?" = "+esc(w.m):""}`;
+    if(!ok){ const cw=wordByText(chosen); fb+=`<div class="fb-sent">Senin seçtiğin: <b>${esc(chosen)}</b>${cw?" = "+esc(cw.m):""}</div>`; }
+    S.res.push({w:g[0],m:w?w.m:"",ok});
+  } else {
+    grade(x,ok); speak(x.w);
+    fb=`<b>${esc(x.w)}</b> = ${esc(x.m)}${x.syn?` <span style="color:var(--muted)">(≈ ${esc(x.syn)})</span>`:""}<div class="fb-sent">${fullSentence(x)}</div>`;
+    if(!ok && chosen){ const cw=(t==="fill"||t==="reverse")?wordByText(chosen,x.k):null; fb+=`<div class="fb-sent">Senin cevabın: <b>${esc(chosen)}</b>${cw&&cw.w!==x.w?" = "+esc(cw.m):""}</div>`; }
+    S.res.push({w:x.w,m:x.m,ok});
+  }
+  const f=$("qFb"); f.className="feedback "+(ok?"good":"bad");
+  f.innerHTML=`<div class="t">${ok?"Doğru!":"Yanlış"}</div>${fb}`;
+  $("qNext").classList.remove("hidden"); $("qNext").textContent=S.i===S.items.length-1?"Sonucu gör":"Sonraki"; $("qNext").focus();
+}
+$("qNext").onclick=()=>{ S.i++; if(S.i<S.items.length) ask(); else endSession(); };
+$("qQuit").onclick=()=>{ if(S.res.length){ S.items=S.items.slice(0,S.res.length); endSession(); } else renderHome(); };
+function endSession(){
+  if(S.ended) return; S.ended=true; snapLearned(); save();
+  timers.forEach(clearInterval);
+  const items=S.res.map(r=>`<li><div><div class="w">${esc(r.w)}</div><div class="m">${esc(r.m)}</div></div><span class="badge ${r.ok?"b-good":"b-bad"}">${r.ok?"doğru":"yanlış"}</span></li>`);
+  if(S.timeUp) items.unshift('<li style="display:block;font-weight:800;color:var(--bad)">⏱ Süre doldu! Cevaplanmayan sorular yanlış sayıldı.</li>');
+  S.onEnd(S.ok,S.res.length,items, Math.floor((Date.now()-S.start)/1000));
+}
+function renderPassage(p,cur,state){
+  return esc(CLOZE[p][1]).replace(/\((\d)\)/g,(m,n)=>{ const i=+n-1; const v=state&&state[p+"-"+i]; const cls=i===cur?"cur":(v||""); const txt= v ? esc(CLOZE[p][2][i][0]) : "("+n+")"; return `<span class="gap ${cls}">${txt}</span>`; });
+}
+
+/* ================= DONE / LİSTE ================= */
+let againFn=null;
+function doneScreen(label,big,text,items,nextText,nextFn,again){
+  $("dLabel").textContent=label; $("dBig").textContent=big; $("dText").textContent=text;
+  $("dNext").textContent=nextText; $("dNext").onclick=nextFn; againFn=again; $("dAgain").classList.toggle("hidden",!again);
+  $("dList").innerHTML=items.join(""); show("done");
+}
+$("dAgain").onclick=()=>againFn&&againFn();
+let lvBackFn=null;
+function showList(title,list,backFn,studyFn){
+  $("lvTitle").textContent=title; lvBackFn=backFn;
+  $("lvLead").textContent="Yeşil: öğrenildi (3. kutu ve üstü) · Gri: çalışılıyor · Kırmızı: zorlanıyorsun";
+  $("lvList").innerHTML=list.map(x=>{ const b=box(x.id);
+    const [c,t]= b>=3?["b-good","Öğrenildi"]: st.mist[x.id]?["b-bad","Zorlanıyorsun"]: b>=0?["b-mid",`Kutu ${b}`]:["b-mid","Yeni"];
+    return `<li><div><div class="w">${x.star?"★ ":""}${esc(x.w)}</div><div class="m">${esc(x.m)}</div></div><span class="badge ${c}">${t}</span></li>`; }).join("");
+  $("lvStudy").classList.toggle("hidden",!studyFn); $("lvStudy").onclick=studyFn;
+  show("listView");
+}
+$("lvBack").onclick=()=>lvBackFn();
+
+/* ================= ANA EYLEMLER ================= */
+$("btnReview").onclick=()=>{
+  const due=shuffle(ALL.filter(x=>isDue(x.id))).sort((a,b)=>box(a.id)-box(b.id)).slice(0,20);
+  if(!due.length){ doneScreen("Günlük tekrar","✓", ALL.some(x=>seen(x.id))?"Bugün tekrar etmen gereken kelime kalmadı. Yarın yeni tekrarlar seni bekliyor olacak.":"Önce '10 yeni kelime' ile öğrenmeye başla; öğrendiğin kelimeler burada zamanı gelince tekrar karşına çıkar.",[],"Ana ekran",renderHome); return; }
+  startSession({title:"Günlük tekrar",items:due.map(x=>({x,t:pickType(x,["fill","meaning","reverse","syn","write","listen"])})),onEnd:(ok,tot,items)=>doneScreen("Günlük tekrar bitti",`${ok}/${tot}`,"Doğru bildiklerin daha ileri bir tarihe ertelendi; yanlışlar yarın yeniden sorulacak.",items,"Ana ekran",renderHome)});
+};
+$("btnNew").onclick=()=>{
+  const order=[...STAR.words, ...UNITS.flatMap(u=>u.words)];
+  const pick=[]; const ids=new Set();
+  for(const x of order){ if(!seen(x.id)&&!ids.has(x.id)){ pick.push(x); ids.add(x.id);} if(pick.length===10) break; }
+  if(!pick.length){ doneScreen("Tebrikler","🏆","Tüm kelimeleri en az bir kez çalıştın. Artık günlük tekrar ve denemelerle devam et.",[],"Ana ekran",renderHome); return; }
+  startCards(pick,()=>{
+    startMatch(pick,()=>{
+      startSession({title:"Yeni kelimeler testi",items:shuffle(pick).map(x=>({x,t:pickType(x,["fill","meaning","reverse","syn"])})),onEnd:(ok,tot,items)=>doneScreen("10 yeni kelime tamam",`${ok}/${tot}`,"Bu kelimeler artık aralıklı tekrar sistemine girdi. Yarın günlük tekrarda tekrar karşına çıkacaklar.",items,"Ana ekran",renderHome,()=>$("btnNew").onclick())});
+    });
+  });
+};
+const weakList=()=>ALL.filter(x=>st.mist[x.id]).sort((a,b)=>(st.mist[b.id]-st.mist[a.id])||((st.srs[b.id]?.w||0)-(st.srs[a.id]?.w||0)));
+$("btnMistakes").onclick=openWeak;
+function openWeak(){
+  const list=weakList();
+  $("wkCount").textContent=list.length;
+  $("wkHard").textContent=list.filter(x=>(st.srs[x.id]?.w||0)>=3).length;
+  $("wkFixed").textContent=st.fixed||0;
+  $("wkLead").textContent= list.length? "Yanlış yaptığın kelimeler burada toplanır. Farklı yöntemlerle tekrar ederek kalıcı hâle getir." : "Henüz zayıf kelimen yok. Test çözdükçe yanlış yaptığın kelimeler burada birikir.";
+  const A=$("wkActs"); A.innerHTML="";
+  const acts=[
+    ["🔁","Bitene kadar tekrar","Karışık sorular; yanlışlar turun sonunda tekrar gelir",()=>weakSession(list,["fill","meaning","reverse","write","listen"],true,"Bitene kadar tekrar")],
+    ["🃏","Kartlarla tekrar","Önce hatırla, sonra çevir",()=>startCards(list.slice(0,20),openWeak)],
+    ["🧩","Eşleştirme","Zayıf kelimeleri anlamlarıyla eşle",()=>startMatch(list.slice(0,20),(sec,mis)=>doneScreen("Eşleştirme bitti",sec+" sn",`${mis} hata.`,[],"Zayıf kelimelerim",openWeak,()=>startMatch(list.slice(0,20),()=>openWeak())))],
+    ["✍️","YDS boşluk doldurma","Cümle içinde 5 şıklı sorular",()=>weakSession(list,["fill"],false,"Zayıf kelimeler · boşluk doldurma")],
+    ["⌨️","Yazarak hatırla","En güçlü hafıza tekniği",()=>weakSession(list,["write"],false,"Zayıf kelimeler · yazma")]
+  ];
+  acts.forEach(([e,t,d,fn])=>{ const b=document.createElement("button"); b.className="step"; b.disabled=!list.length; if(!list.length) b.style.opacity=".5";
+    b.innerHTML=`<div class="n">${e}</div><div><strong>${t}</strong><span>${d}</span></div>`; b.onclick=fn; A.appendChild(b); });
+  $("wkList").innerHTML=list.map(x=>{ const w=st.srs[x.id]?.w||0, need=st.mist[x.id];
+    return `<li><div><div class="w">${x.star?"★ ":""}${esc(x.w)} <span style="font-weight:500;color:var(--muted);font-size:.8rem">${META(x.k).tag}</span></div><div class="m">${esc(x.m)}</div></div><span class="badge ${w>=3?"b-bad":"b-mid"}">${w} kez yanlış · ${need} doğru kaldı</span></li>`; }).join("");
+  show("weak");
+}
+function weakSession(list,types,requeue,title){
+  const pick=shuffle(list).slice(0,15);
+  startSession({title,requeue,items:pick.map(x=>({x,t:pickType(x,types)})),onEnd:(ok,tot,items)=>{
+    const left=weakList().length;
+    doneScreen(title+" bitti",`${ok}/${tot}`,`Zayıf listende şu an ${left} kelime var.`+(left?" Düzenli tekrarla bu sayıyı sıfırla!":" Tebrikler, hepsini düzelttin! 🎉"),items,"Zayıf kelimelerim",openWeak,()=>weakSession(weakList(),types,requeue,title));}});
+}
+$("wkBack").onclick=renderHome;
+$("btnCloze").onclick=renderClozeList;
+function renderClozeList(){
+  const L=$("clozeUnits"); L.innerHTML="";
+  CLOZE.forEach((c,i)=>{ const b=document.createElement("button"); b.className="unit"; const best=st.best["cl"+i];
+    b.innerHTML=`<div class="em">📄</div><div class="info"><strong>${i+1}. ${esc(c[0])}</strong><span>${c[2].length} boşluk${best!=null?` · en iyi: ${best}/${c[2].length}`:""}</span></div>`;
+    b.onclick=()=>startCloze(i); L.appendChild(b); });
+  show("clozeList");
+}
+$("clBack").onclick=renderHome;
+function startCloze(p){
+  startSession({title:"Cloze: "+CLOZE[p][0],clozeState:{},items:CLOZE[p][2].map((g,i)=>({t:"cloze",p,g:i,x:null})),onEnd:(ok,tot,items)=>{
+    if(st.best["cl"+p]==null||ok>st.best["cl"+p]) st.best["cl"+p]=ok; save();
+    doneScreen("Cloze testi bitti",`${ok}/${tot}`,"Paragrafın tamamını tekrar oku; doğru kelimelerin bağlamda nasıl çalıştığını görmek kalıcılığı artırır.",[`<li style="display:block;line-height:1.7">${renderPassage(p,-1,Object.fromEntries(CLOZE[p][2].map((g,i)=>[p+"-"+i,"filled"])))}</li>`,...items],"Cloze listesi",renderClozeList,()=>startCloze(p));}});
+}
+$("timeMode").onchange=e=>{ st.tm=e.target.value; save(); };
+const EXAMS=[[20,"Mini deneme","6 kelime/phrasal · 5 bağlaç · 1 cloze paragrafı · diğer"],[40,"Orta deneme","İki katı soru, 2 cloze paragrafı"],[80,"Tam deneme","Gerçek YDS gibi 80 soru, 4 cloze paragrafı"]];
+$("btnExam").onclick=openExamMenu;
+function openExamMenu(){
+  const L=$("exOpts"); L.innerHTML="";
+  const m=mult();
+  EXAMS.forEach(([n,name,d])=>{ const b=document.createElement("button"); b.className="unit";
+    const mins=Math.round(n*90*m/60);
+    b.innerHTML=`<div class="em">${n}</div><div class="info"><strong>${name}</strong><span>${d}</span></div><div class="pct">${m?mins+" dk":"süresiz"}</div>`;
+    b.onclick=()=>startExam(n); L.appendChild(b); });
+  const H=(st.hist||[]).slice(-10).reverse();
+  $("exHist").innerHTML=H.length?H.map(h=>`<li><div><div class="w">${h.n} soru · ${h.ok} doğru</div><div class="m">${h.d} · ${Math.floor(h.sec/60)} dk ${h.sec%60} sn${h.tu?" · süre doldu":""}</div></div><span class="badge ${h.p>=70?"b-good":h.p>=50?"b-mid":"b-bad"}">%${h.p}</span></li>`).join(""):'<li><span class="m">Henüz deneme çözmedin.</span></li>';
+  show("examMenu");
+}
+$("exBack").onclick=renderHome;
+function startExam(n){
+  n=n||20;
+  const anySeen=ALL.some(x=>seen(x.id));
+  const okWord=x=>META(x.k).stage===1||(anySeen&&seen(x.id));
+  const used=new Set();
+  const pick=(k,c)=>{ const pool=shuffle(UNITS.filter(u=>u.pos===k&&u.k!=="t").flatMap(u=>u.words).filter(x=>!used.has(x.id)&&(k==="c"||k==="p"||okWord(x)))); const out=pool.slice(0,c); out.forEach(x=>used.add(x.id)); return out; };
+  const blocks=n/20, vocab=[], conn=[], cloze=[], extra=[];
+  const passages=shuffle(CLOZE.map((c,i)=>i)).slice(0,blocks);
+  for(let b=0;b<blocks;b++){
+    ["n","a","r","v","p","p"].forEach(k=>pick(k,1).forEach(x=>vocab.push({x,t:"fill"})));
+    pick("c",5).forEach(x=>conn.push({x,t:"fill"}));
+    const p=passages[b]; CLOZE[p][2].forEach((g,i)=>cloze.push({t:"cloze",p,g:i,x:null}));
+    pick("n",1).concat(pick("v",1),pick("a",1)).forEach(x=>extra.push({x,t:x.syn?"syn":"fill"}));
+  }
+  let items=[...vocab,...conn,...cloze,...extra];
+  while(items.length<n){ const k=["n","a","r","v","p"][items.length%5]; const x=pick(k,1)[0]; if(!x) break; items.push({x,t:"fill"}); }
+  items=items.slice(0,n);
+  const name=EXAMS.find(e=>e[0]===n)[1];
+  startSession({title:name,timed:true,limitBase:n*90,items,onEnd:(ok,tot,res,sec)=>{
+    const pct=Math.round(ok/tot*100);
+    st.hist=(st.hist||[]); st.hist.push({d:today(),n,ok,p:pct,sec,tu:!!S.timeUp}); if(st.hist.length>50) st.hist.shift();
+    if(st.best.exam==null||pct>st.best.exam) st.best.exam=pct; save();
+    doneScreen(name+" bitti",`${ok}/${tot}`,`Başarı: %${pct} · Süre: ${Math.floor(sec/60)} dk ${sec%60} sn · En iyi sonucun: %${st.best.exam}. Yanlış yaptığın kelimeler "Zayıf kelimelerim" alanına eklendi.`,res,"Denemeler",openExamMenu,()=>startExam(n));}});
+}
+/* ================= İSTATİSTİK ================= */
+let lastAct=Date.now(); ["click","keydown","touchstart"].forEach(ev=>document.addEventListener(ev,()=>lastAct=Date.now(),{passive:true}));
+setInterval(()=>{ if(document.visibilityState==="visible" && $("home").classList.contains("hidden") && $("stats").classList.contains("hidden") && Date.now()-lastAct<120000){ L().sec+=15; save(); } },15000);
+$("btnStats").onclick=openStats; $("stBack").onclick=renderHome;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim()||"#888";
+const fmtD=d=>{ const [y,m,dd]=d.split("-"); return dd+"."+m; };
+function lastDays(n){ const out=[]; for(let i=n-1;i>=0;i--) out.push(addDays(-i)); return out; }
+function streaks(){ const days=Object.keys(st.log||{}).filter(d=>st.log[d].q>0||st.log[d].xp>0).sort(); let best=0,cur=0,prev=null;
+  days.forEach(d=>{ if(prev && addDaysFrom(prev,1)===d) cur++; else cur=1; best=Math.max(best,cur); prev=d; }); return {best,days:days.length}; }
+function addDaysFrom(d,n){ const [y,m,dd]=d.split("-").map(Number); return dstr(new Date(y,m-1,dd+n).getTime()); }
+function barLine(days,bars,line,opts){
+  const W=340,H=170,pl=28,pr=opts.line?30:8,pt=10,pb=24, iw=W-pl-pr, ih=H-pt-pb, n=days.length, bw=iw/n;
+  const bmax=Math.max(5,...bars); let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.aria}">`;
+  for(let g=0;g<=4;g++){ const y=pt+ih*g/4; s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="${css("--line")}" stroke-width="1"/>`; s+=`<text x="${pl-4}" y="${y+3}" font-size="8" text-anchor="end" fill="${css("--muted")}">${Math.round(bmax*(1-g/4))}</text>`; if(opts.line) s+=`<text x="${W-pr+4}" y="${y+3}" font-size="8" fill="${css("--muted")}">%${100-g*25}</text>`; }
+  bars.forEach((v,i)=>{ const h=ih*v/bmax; s+=`<rect x="${pl+i*bw+bw*.15}" y="${pt+ih-h}" width="${bw*.7}" height="${h}" rx="2" fill="${opts.color||css("--accent")}"><title>${fmtD(days[i])}: ${v}</title></rect>`; });
+  if(opts.line){ let pts=[]; line.forEach((v,i)=>{ if(v!=null) pts.push([pl+i*bw+bw/2, pt+ih*(1-v/100)]); });
+    if(pts.length>1) s+=`<polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="${css("--ok")}" stroke-width="2"/>`;
+    pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.5" fill="${css("--ok")}"/>`); }
+  const step=Math.ceil(n/7); days.forEach((d,i)=>{ if(i%step===0||i===n-1) s+=`<text x="${pl+i*bw+bw/2}" y="${H-8}" font-size="8" text-anchor="middle" fill="${css("--muted")}">${fmtD(d)}</text>`; });
+  return s+"</svg>";
+}
+function lineChart(labels,vals,opts){
+  const W=340,H=150,pl=30,pr=10,pt=10,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=labels.length, max=opts.max||Math.max(10,...vals);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.aria}">`;
+  for(let g=0;g<=4;g++){ const y=pt+ih*g/4; s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="${css("--line")}"/><text x="${pl-4}" y="${y+3}" font-size="8" text-anchor="end" fill="${css("--muted")}">${opts.pct?"%":""}${Math.round(max*(1-g/4))}</text>`; }
+  const X=i=>pl+(n===1?iw/2:iw*i/(n-1)), Y=v=>pt+ih*(1-v/max);
+  s+=`<polyline points="${vals.map((v,i)=>X(i)+","+Y(v)).join(" ")}" fill="none" stroke="${opts.color||css("--accent")}" stroke-width="2.5"/>`;
+  vals.forEach((v,i)=>s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="${opts.color||css("--accent")}"><title>${labels[i]}: ${v}</title></circle>`);
+  const step=Math.ceil(n/6); labels.forEach((l,i)=>{ if(i%step===0||i===n-1) s+=`<text x="${X(i)}" y="${H-8}" font-size="8" text-anchor="middle" fill="${css("--muted")}">${l}</text>`; });
+  return s+"</svg>";
+}
+function hbars(rows){ return `<div class="bars">${rows.map(([l,v,max,col,txt])=>`<div class="row2"><span>${l}</span><div class="bg"><i style="width:${max?Math.round(v/max*100):0}%;background:${col}"></i></div><b style="text-align:right">${txt}</b></div>`).join("")}</div>`; }
+function openStats(){
+  snapLearned(); save();
+  const log=st.log||{}, all=Object.values(log);
+  const tq=all.reduce((s,d)=>s+d.q,0), tok=all.reduce((s,d)=>s+d.ok,0), tsec=all.reduce((s,d)=>s+d.sec,0);
+  const lrn=ALL.filter(x=>learned(x.id)).length, sn=ALL.filter(x=>seen(x.id)).length, sk=streaks();
+  const k=[["🔥",(st.lastDay===today()||st.lastDay===addDays(-1))?st.days:0,"gün serisi"],["🏆",sk.best,"en uzun seri"],["📅",sk.days,"çalışılan gün"],
+    ["✅",tq?"%"+Math.round(tok/tq*100):"-","doğruluk"],["❓",tq,"çözülen soru"],["⏱",Math.round(tsec/60)+" dk","çalışma süresi"],
+    ["📘",lrn,"öğrenilen kelime"],["👀",sn,"çalışılan kelime"],["🎯",Object.keys(st.mist).length,"zayıf kelime"]];
+  $("stKpis").innerHTML=k.map(([e,v,t])=>`<div class="kpi"><b>${v}</b><span>${e} ${t}</span></div>`).join("");
+  const d14=lastDays(14), q14=d14.map(d=>log[d]?.q||0), a14=d14.map(d=>log[d]&&log[d].q?Math.round(log[d].ok/log[d].q*100):null);
+  let html=`<div class="chart"><h3>Son 14 gün</h3><div class="sub">Günlük çözülen soru ve doğruluk oranı</div>${barLine(d14,q14,a14,{line:true,aria:"Son 14 günde çözülen soru sayısı ve doğruluk"})}<div class="legend"><span><i style="background:${css("--accent")}"></i>Soru sayısı</span><span><i style="background:${css("--ok")}"></i>Doğruluk %</span></div></div>`;
+  // learned over time
+  const ld=Object.keys(log).filter(d=>log[d].ln!=null).sort(); let lv=[],ll=[], last=0;
+  ld.forEach(d=>{ last=Math.max(last,log[d].ln||0); lv.push(last); ll.push(fmtD(d)); });
+  if(lv.length) html+=`<div class="chart"><h3>Öğrenilen kelime birikimi</h3><div class="sub">3. kutuya ulaşan (kalıcı öğrenilmiş sayılan) kelimeler</div>${lineChart(ll,lv,{aria:"Öğrenilen kelime sayısının zaman içindeki değişimi",color:css("--ok")})}</div>`;
+  // new words & minutes per day
+  const nw14=d14.map(d=>log[d]?.nw||0), mn14=d14.map(d=>Math.round((log[d]?.sec||0)/60));
+  html+=`<div class="chart"><h3>Günlük yeni kelime</h3><div class="sub">İlk kez çalışılan kelime sayısı (son 14 gün)</div>${barLine(d14,nw14,[],{aria:"Günlük yeni kelime",color:css("--accent2")})}</div>`;
+  html+=`<div class="chart"><h3>Günlük çalışma süresi (dakika)</h3><div class="sub">Aktif çalışılan süre, son 14 gün</div>${barLine(d14,mn14,[],{aria:"Günlük çalışma süresi",color:"#D9731F"})}</div>`;
+  // heatmap 8 weeks
+  const d56=lastDays(56); const maxq=Math.max(1,...d56.map(d=>log[d]?.q||0));
+  html+=`<div class="chart"><h3>Çalışma takvimi (8 hafta)</h3><div class="sub">Renk koyulaştıkça o gün daha çok soru çözülmüş</div><div class="heat">${d56.map(d=>{const q=log[d]?.q||0; const o=q?0.25+0.75*q/maxq:0; return `<div title="${fmtD(d)}: ${q} soru" style="${q?`background:${css("--ok")};opacity:${o.toFixed(2)}`:""}"></div>`;}).join("")}</div></div>`;
+  // stage progress
+  html+=`<div class="chart"><h3>Aşamalara göre ilerleme</h3><div class="sub">Öğrenilen / toplam</div>${hbars([1,2,3].map(s=>{const W=UNITS.filter(u=>u.stage===s).flatMap(u=>u.words); const l=W.filter(x=>learned(x.id)).length; return [s+". Aşama",l,W.length,css("--accent"),`${l}/${W.length}`];}).concat(UNITS.filter(u=>u.stage===1).map(u=>{const l=u.words.filter(x=>learned(x.id)).length; return ["  "+u.name.split(" ")[0],l,u.words.length,css("--accent2"),`${l}/${u.words.length}`];})))}</div>`;
+  // box distribution
+  const boxes=[0,1,2,3,4,5].map(b=>ALL.filter(x=>box(x.id)===b).length); const bmax=Math.max(1,...boxes);
+  const bnames=["Kutu 0 · yeni/yanlış","Kutu 1 · 1 gün","Kutu 2 · 3 gün","Kutu 3 · 7 gün","Kutu 4 · 14 gün","Kutu 5 · 30 gün"];
+  html+=`<div class="chart"><h3>Aralıklı tekrar kutuları</h3><div class="sub">Kelimeler üst kutulara çıktıkça hafızada kalıcı hâle gelir</div>${hbars(boxes.map((v,i)=>[bnames[i],v,bmax,i>=3?css("--ok"):i===0?css("--bad"):"#D9731F",v]))}</div>`;
+  // type accuracy
+  const TN={fill:"Boşluk doldurma",meaning:"Anlam (EN→TR)",reverse:"Anlam (TR→EN)",syn:"Eş anlam",listen:"Dinleme",write:"Yazma",cloze:"Cloze paragraf"};
+  const tsr=Object.entries(st.ts||{}).filter(([t,v])=>v.q>0);
+  if(tsr.length) html+=`<div class="chart"><h3>Soru tipine göre doğruluk</h3><div class="sub">En düşük olan tipe ağırlık ver</div>${hbars(tsr.sort((a,b)=>a[1].ok/a[1].q-b[1].ok/b[1].q).map(([t,v])=>{const p=Math.round(v.ok/v.q*100); return [TN[t]||t,p,100,p>=70?css("--ok"):p>=50?"#D9731F":css("--bad"),"%"+p];}))}</div>`;
+  // exam history
+  const hs=(st.hist||[]).slice(-15);
+  if(hs.length) html+=`<div class="chart"><h3>Deneme sonuçları</h3><div class="sub">Son ${hs.length} deneme, başarı yüzdesi</div>${lineChart(hs.map(h=>fmtD(h.d)),hs.map(h=>h.p),{max:100,pct:true,aria:"Deneme başarı yüzdeleri",color:"#C23C6B"})}</div>`;
+  // daily table
+  const rows=Object.keys(log).sort().reverse().slice(0,30);
+  html+=`<div class="chart"><h3>Günlük çalışma tablosu</h3><div class="sub">Son 30 gün</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Tarih</th><th>Soru</th><th>Doğru</th><th>%</th><th>Yeni</th><th>Dk</th><th>Puan</th></tr></thead><tbody>${rows.length?rows.map(d=>{const r=log[d]; return `<tr><td>${fmtD(d)}</td><td>${r.q}</td><td>${r.ok}</td><td>${r.q?Math.round(r.ok/r.q*100):"-"}</td><td>${r.nw}</td><td>${Math.round(r.sec/60)}</td><td>${r.xp}</td></tr>`;}).join(""):'<tr><td colspan="7" style="text-align:left;color:var(--muted)">Henüz kayıt yok. Bugün çalışmaya başladığında tablo dolmaya başlar.</td></tr>'}</tbody></table></div></div>`;
+  $("stCharts").innerHTML=html;
+  show("stats");
+}
+
+/* ================= YEDEK ================= */
+$("btnBackup").onclick=()=>{ $("bkOut").value="YDSAK1:"+btoa(unescape(encodeURIComponent(JSON.stringify(st)))); $("bkIn").value=""; $("bkMsg").textContent=""; show("backup"); };
+$("bkCopy").onclick=async()=>{ const t=$("bkOut"); try{ await navigator.clipboard.writeText(t.value); $("bkMsg").textContent="✓ Kopyalandı. Bu kodu kendine mesaj olarak gönderip sakla."; }catch(e){ t.select(); try{document.execCommand("copy"); $("bkMsg").textContent="✓ Kopyalandı.";}catch(e2){ $("bkMsg").textContent="Otomatik kopyalanamadı; kutuya uzun basıp tümünü seç ve kopyala."; } } };
+$("bkLoad").onclick=()=>{ try{ const v=$("bkIn").value.trim(); if(!v.startsWith("YDSAK1:")) throw 0; const o=JSON.parse(decodeURIComponent(escape(atob(v.slice(7))))); if(!o||typeof o!=="object"||!o.srs) throw 0;
+  if(!confirm("Bu cihazdaki ilerleme yedekteki ile değiştirilecek. Devam edilsin mi?")) return; st=Object.assign(st,o); save(); $("bkMsg").textContent="✓ İlerleme geri yüklendi."; setTimeout(renderHome,800);
+ }catch(e){ $("bkMsg").textContent="Kod geçersiz. Yedek kodunun tamamını kopyaladığından emin ol."; } };
+$("bkBack").onclick=renderHome;
+
+renderHome();
+
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+</script>
+</body>
+</html>

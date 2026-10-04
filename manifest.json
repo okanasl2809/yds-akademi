@@ -1,0 +1,17 @@
+{
+  "name": "YDS Kelime Akademisi",
+  "short_name": "YDS Akademi",
+  "description": "ÖSYM'nin sorduğu kelimelerle YDS ve YÖKDİL kelime çalışması: aralıklı tekrar, testler, denemeler ve istatistikler.",
+  "lang": "tr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F2FB",
+  "theme_color": "#5B3FD9",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
