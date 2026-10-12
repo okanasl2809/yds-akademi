@@ -1587,6 +1587,9 @@ function updateBar(){
 }
 
 /* ================= ANA EKRAN ================= */
+function actsFor(p){ return ACTS.filter(a=>!(a[0]==="syn"&&p.every(x=>!x.syn))); }
+function partDone(u,i,p){ return actsFor(p).filter(a=>st.steps[u.k+i+":"+a[0]]).length; }
+function unitProg(u){ let d=0,t=0,full=0,started=0; parts(u).forEach((p,i)=>{ const n=partDone(u,i,p), m=actsFor(p).length; d+=n; t+=m; if(n===m) full++; if(n) started++; }); return {pct:t?Math.round(d/t*100):0,full,started,total:parts(u).length}; }
 function renderHome(){
   updateBar();
   const due=ALL.filter(x=>isDue(x.id)).length, ls=ALL.filter(x=>learned(x.id)).length, sn=ALL.filter(x=>seen(x.id)).length;
@@ -1601,9 +1604,9 @@ function renderHome(){
   UNIT_LIST.forEach(u=>{
     if(u.stage!==lastStage && u.stage>0){ lastStage=u.stage; const h=document.createElement("h2"); const n=UNITS.filter(x=>x.stage===u.stage).reduce((s,x)=>s+x.words.length,0); const l=UNITS.filter(x=>x.stage===u.stage).reduce((s,x)=>s+x.words.filter(w=>learned(w.id)).length,0); h.textContent=`${STAGES[u.stage]} — ${n} kelime · öğrenilen ${l}`; h.style.fontSize="1rem"; L.appendChild(h); }
     else if(u.stage===0) lastStage=0;
-    const l=u.words.filter(x=>learned(x.id)).length, p=Math.round(l/u.words.length*100);
+    const l=u.words.filter(x=>learned(x.id)).length, g=unitProg(u), p=g.pct;
     const b=document.createElement("button"); b.className="unit";
-    b.innerHTML=`<div class="em">${u.em}</div><div class="info"><strong>${u.name}</strong><span>${u.words.length} kelime · ${parts(u).length} bölüm</span><div class="mini"><i style="width:${p}%"></i></div></div><div class="pct">%${p}</div>`;
+    b.innerHTML=`<div class="em">${g.full===g.total?"🏅":u.em}</div><div class="info"><strong>${u.name}${g.full===g.total?" · Tamamlandı":""}</strong><span>${u.words.length} kelime · ✅ ${g.full}/${g.total} bölüm bitti${g.started>g.full?` · ${g.started-g.full} bölüm yarım`:""} · ${l} kelime kalıcı</span><div class="mini"><i style="width:${p}%"></i></div></div><div class="pct">${g.full===g.total?"✓":"%"+p}</div>`;
     b.onclick=()=>openUnit(u.k); L.appendChild(b);
   });
   show("home");
@@ -1617,13 +1620,13 @@ let curUnit=null, curPart=null, curPartIdx=0;
 function openUnit(k){
   curUnit=unitByK(k);
   $("uvTitle").textContent=curUnit.em+" "+curUnit.name+(curUnit.stage?` (${curUnit.stage}. Aşama)`:"");
-  $("uvLead").textContent=`${curUnit.words.length} kelime, ${PART}'erli bölümlere ayrıldı. Bölümleri sırayla bitir.`;
+  { const g=unitProg(curUnit); $("uvLead").textContent=`${curUnit.words.length} kelime, ${PART}'erli bölümlere ayrıldı · ✅ ${g.full}/${g.total} bölüm bitti · %${g.pct}`; }
   $("uvTip").textContent="💡 "+curUnit.tip;
   const L=$("partList"); L.innerHTML="";
   parts(curUnit).forEach((p,i)=>{
-    const l=p.filter(x=>learned(x.id)).length, pc=Math.round(l/p.length*100);
+    const l=p.filter(x=>learned(x.id)).length, dn=partDone(curUnit,i,p), tt=actsFor(p).length, pc=Math.round(dn/tt*100), full=dn===tt;
     const b=document.createElement("button"); b.className="unit";
-    b.innerHTML=`<div class="em">${i+1}</div><div class="info"><strong>Bölüm ${i+1}</strong><span>${esc(p.slice(0,3).map(x=>x.w).join(", "))}…</span><div class="mini"><i style="width:${pc}%"></i></div></div><div class="pct">%${pc}</div>`;
+    b.innerHTML=`<div class="em">${full?"✅":(dn?"📗":i+1)}</div><div class="info"><strong>Bölüm ${i+1}${full?" · Tamamlandı":""}</strong><span>${esc(p.slice(0,3).map(x=>x.w).join(", "))}… · adım ${dn}/${tt} · ${l}/${p.length} kelime kalıcı</span><div class="mini"><i style="width:${pc}%"></i></div></div><div class="pct">${full?"✓":"%"+pc}</div>`;
     b.onclick=()=>openPart(i); L.appendChild(b);
   });
   show("unitView");
@@ -1643,7 +1646,7 @@ function openPart(i){
   curPartIdx=i; curPart=parts(curUnit)[i];
   $("pvTitle").textContent=`${curUnit.em} ${curUnit.name}${curUnit.stage?" ("+curUnit.stage+". Aşama)":""} · Bölüm ${i+1}`;
   const l=curPart.filter(x=>learned(x.id)).length;
-  $("pvLead").textContent=`${curPart.length} kelime · öğrenilen ${l}. Adımları sırayla yapmak en etkili yoldur.`;
+  $("pvLead").textContent=`${curPart.length} kelime · adım ${partDone(curUnit,i,curPart)}/${actsFor(curPart).length} tamam · ${l} kelime kalıcı öğrenildi. Adımları sırayla yapmak en etkili yoldur.`;
   const L=$("stepList"); L.innerHTML="";
   ACTS.forEach(([k,t,d],j)=>{
     if(k==="syn" && curPart.every(x=>!x.syn)) return;
@@ -1658,7 +1661,7 @@ $("pvBack").onclick=()=>openUnit(curUnit.k);
 function runAct(k){
   const key=curUnit.k+curPartIdx+":"+k, back=()=>openPart(curPartIdx);
   const mark=()=>{st.steps[key]=true; save();};
-  if(k==="cards") return startCards(curPart,()=>{mark(); doneScreen("Kartlar bitti","✓","Şimdi eşleştirme oyunuyla pekiştir.",[], "Eşleştirmeye geç",()=>runAct("match"),()=>runAct("cards"));});
+  if(k==="cards") return startCards(curPart,()=>{mark(); doneScreen("Kartlar bitti","✓","Şimdi eşleştirme oyunuyla pekiştir.",[], "Eşleştirmeye geç",()=>runAct("match"),()=>runAct("cards"));},back);
   if(k==="match") return startMatch(curPart,(sec,mis)=>{mark(); doneScreen("Eşleştirme bitti",sec+" sn",`${mis} hata yaptın.`,[],"Sonraki adım",()=>runAct("meaning"),()=>runAct("match"));});
   const types={meaning:["meaning","reverse"],fill:["fill"],syn:["syn"],listen:["listen"],write:["write"],mix:["fill","meaning","reverse","syn","listen","write"]}[k];
   const words=k==="write"||k==="listen"?shuffle(curPart).slice(0,10):shuffle(curPart);
@@ -1668,8 +1671,8 @@ function pickType(x,types){ let t=types.filter(t=>!(t==="syn"&&!x.syn)); if(!t.l
 $("pvList").onclick=()=>showList(`${curUnit.name} · Bölüm ${curPartIdx+1}`,curPart,()=>openPart(curPartIdx));
 
 /* ================= KARTLAR ================= */
-let cList=[],ci=0,cDone=null;
-function startCards(list,onDone){ cList=list; ci=0; cDone=onDone; renderCard(); show("cards"); }
+let cList=[],ci=0,cDone=null,cQuitFn=null;
+function startCards(list,onDone,onQuit){ cList=list; ci=0; cDone=onDone; cQuitFn=onQuit||onDone; renderCard(); show("cards"); }
 function renderCard(){
   const x=cList[ci];
   $("cCount").textContent=`${ci+1} / ${cList.length}`;
@@ -1690,7 +1693,7 @@ document.querySelectorAll("#cRate button").forEach(b=>b.onclick=()=>{
   addXp(2);
   if(ci<cList.length-1){ci++; renderCard();} else cDone();
 });
-$("cQuit").onclick=()=>cDone?cDone():renderHome();
+$("cQuit").onclick=()=>cQuitFn?cQuitFn():renderHome();
 
 /* ================= EŞLEŞTİRME ================= */
 let mBoards=[],mb=0,mSel=null,mLeft=0,mStart=0,mMist=0,mDone=null;
