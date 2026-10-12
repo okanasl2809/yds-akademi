@@ -32,3 +32,11 @@ E�inle paylaşmak için bu adresi göndermen yeterli.
 Yeni kelimeler veya özellikler eklendiğinde sadece yeni index.html dosyasını GitHub'daki deponun
 üzerine yüklemen yeterli. sw.js içindeki "yds-akademi-v1" yazısını "v2" yapmak, telefonların
 yeni sürümü hemen almasını sağlar.
+
+## Güncelleme butonu
+Uygulamada "🔄 Uygulamayı güncelle" butonu var (YDS Akademi: ana ekranın altı; Dil Atölyesi: Defter › Uygulama).
+Basınca en yeni sürüm indirilir ve uygulama yenilenir. İlerleme silinmez.
+Yeni sürüm yayınlandığında uygulama bunu kendisi fark eder ve altta "Yeni güncelleme var" uyarısı çıkar.
+
+Yeni sürüm yayınlarken: index.html içindeki APP_VER ile version.json içindeki "v" değerini
+aynı yeni değere getir (örn. 2026.10.20-1). Uyarı bu iki değer farklı olunca çıkar.

@@ -205,6 +205,7 @@ h2{font-size:1.15rem;margin:22px 0 10px}
     <h2>Üniteler</h2>
     <div class="units" id="unitList"></div>
     <button class="ghost" id="btnGuide">📘 Bu uygulama nasıl öğretir? (çalışma rehberi)</button>
+    <button class="ghost" id="btnUpdate" style="border-color:var(--accent);color:var(--accent);font-weight:800">🔄 Uygulamayı güncelle <span style="font-weight:600;opacity:.75;font-size:.85rem">· sürüm 2026.10.12-1</span></button>
     <button class="ghost" id="btnBackup">💾 İlerlemeyi yedekle / geri yükle</button>
     <button class="ghost" id="btnReset" style="font-size:.9rem">İlerlemeyi sıfırla</button>
   </section>
@@ -2063,6 +2064,45 @@ $("bkBack").onclick=renderHome;
 renderHome();
 
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+/* ===== GÜNCELLEME (Güncelle butonu + otomatik yeni sürüm uyarısı) ===== */
+const APP_VER="2026.10.12-1";
+const UPD={
+ web:()=>/^https?:$/.test(location.protocol),
+ async check(){ try{ const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return null; const j=await r.json(); return j&&j.v?String(j.v):null; }catch(e){ return null; } },
+ async run(btn){
+  if(btn){ btn.disabled=true; btn.innerHTML="⏳ Güncelleniyor…"; }
+  try{ sessionStorage.setItem("updDone","1"); }catch(e){}
+  try{ if("serviceWorker" in navigator){ const rs=await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r=>r.update().catch(()=>{}))); } }catch(e){}
+  try{ if(window.caches){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(e){}
+  location.reload();
+ },
+ bar(html,btnText,onBtn,ms){
+  const old=document.getElementById("updBar"); if(old) old.remove();
+  const d=document.createElement("div"); d.id="updBar";
+  d.style.cssText="position:fixed;left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9999;max-width:500px;margin:0 auto;background:#1C1740;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.3);font-family:inherit";
+  d.innerHTML='<span style="flex:1;line-height:1.35">'+html+'</span>'+(btnText?'<button id="updGo" style="border:0;border-radius:10px;padding:9px 14px;background:#FFD23F;color:#1C1740;font:inherit;font-weight:800">'+btnText+'</button>':'')+'<button id="updX" aria-label="Kapat" style="border:0;background:transparent;color:#fff;font-size:1.2rem;padding:4px 6px;font-family:inherit">✕</button>';
+  document.body.appendChild(d);
+  document.getElementById("updX").onclick=()=>d.remove();
+  if(btnText) document.getElementById("updGo").onclick=e=>onBtn(e.currentTarget);
+  if(ms) setTimeout(()=>d.remove(),ms);
+ },
+ lastAuto:0,
+ async auto(){
+  if(!UPD.web()||Date.now()-UPD.lastAuto<5*60e3) return; UPD.lastAuto=Date.now();
+  const v=await UPD.check(); if(v&&v!==APP_VER) UPD.bar("🆕 <b>Yeni güncelleme var.</b><br><small>İlerlemen korunur.</small>","Güncelle",b=>UPD.run(b));
+ },
+ async manual(btn){
+  if(!UPD.web()){ location.reload(); return; }
+  return UPD.run(btn);
+ }
+};
+window.addEventListener("load",()=>{
+  let done=false; try{ done=sessionStorage.getItem("updDone")==="1"; sessionStorage.removeItem("updDone"); }catch(e){}
+  if(done) UPD.bar("✅ <b>Uygulama güncellendi.</b><br><small>Sürüm "+APP_VER+"</small>",null,null,4000);
+  setTimeout(UPD.auto,1500);
+});
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") UPD.auto(); });
+$("btnUpdate").onclick=e=>UPD.manual(e.currentTarget);
 </script>
 </body>
 </html>
